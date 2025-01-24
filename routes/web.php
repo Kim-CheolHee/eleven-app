@@ -20,8 +20,25 @@ Route::get('/dashboard', function () {
 })->middleware(['auth', 'verified'])->name('dashboard');
 
 Route::get('/world-time', function () {
+    $timezones = [
+        '대한민국' => 'Asia/Seoul',
+        '베트남' => 'Asia/Ho_Chi_Minh',
+        '네팔' => 'Asia/Kathmandu',
+        '튀니지' => 'Africa/Tunis',
+        '가나' => 'Africa/Accra',
+        '볼리비아' => 'America/La_Paz',
+        '콜롬비아' => 'America/Bogota',
+    ];
+
+    $times = collect($timezones)->map(function ($timezone, $country) {
+        return [
+            'country' => $country,
+            'time' => now()->setTimezone($timezone)->format('Y-m-d H:i:s'),
+        ];
+    });
+
     return Inertia::render('WorldTime', [
-        'serverTime' => now()->toDateTimeString(), // 서버 시간을 전달
+        'worldTimes' => $times->values()->toArray(), // 배열로 변환
     ]);
 })->name('world_time');
 
