@@ -65,10 +65,10 @@ function handleImageError() {
 
                         <template v-else>
                             <Link
-                                :href="route('world_time')"
+                                :href="route('koica164_time')"
                                 class="rounded-md px-3 py-2 text-black ring-1 ring-transparent transition hover:text-black/70 focus:outline-none focus-visible:ring-[#FF2D20] dark:text-white dark:hover:text-white/80 dark:focus-visible:ring-white"
                             >
-                                World time
+                                KOICA 164 time
                             </Link>
 
                             <Link

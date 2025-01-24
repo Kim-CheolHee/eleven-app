@@ -7,7 +7,7 @@ use Inertia\Inertia;
 
 Route::get('/', function () {
     return Inertia::render('Welcome', [
-        'worldTime' => Route::has('worldTime'),
+        'koica164Time' => Route::has('koica164Time'),
         'canLogin' => Route::has('login'),
         'canRegister' => Route::has('register'),
         'laravelVersion' => Application::VERSION,
@@ -19,10 +19,10 @@ Route::get('/dashboard', function () {
     return Inertia::render('Dashboard');
 })->middleware(['auth', 'verified'])->name('dashboard');
 
-Route::get('/world-time', function () {
+Route::get('/koica164-time', function () {
     $timezones = [
         '대한민국' => 'Asia/Seoul',
-        '베트남' => 'Asia/Ho_Chi_Minh',
+        '베트남/라오스' => 'Asia/Ho_Chi_Minh',
         '네팔' => 'Asia/Kathmandu',
         '튀니지' => 'Africa/Tunis',
         '가나' => 'Africa/Accra',
@@ -37,10 +37,10 @@ Route::get('/world-time', function () {
         ];
     });
 
-    return Inertia::render('WorldTime', [
-        'worldTimes' => $times->values()->toArray(), // 배열로 변환
+    return Inertia::render('koica164Time', [
+        'koica164Times' => $times->values()->toArray(), // 배열로 변환
     ]);
-})->name('world_time');
+})->name('koica164_time');
 
 Route::middleware('auth')->group(function () {
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
