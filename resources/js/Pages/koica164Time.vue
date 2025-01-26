@@ -60,61 +60,67 @@ const getFlagImage = (countryCode) => {
 <template>
     <GuestLayout>
         <Head title="KOICA 164" />
-        <div class="min-h-screen flex flex-col items-center justify-center bg-gray-50 dark:bg-gray-900">
+        <div class="min-h-screen flex flex-col items-center justify-center bg-gray-50 dark:bg-gray-900 p-4">
             <h1 class="text-4xl font-bold text-black-800 dark:text-gray-100 mb-8">KOICA 164❤️</h1>
-            <!-- 테이블 -->
-            <table class="table-auto border-collapse border border-gray-300 dark:border-gray-700 w-3/4 text-center">
-                <thead>
-                    <tr class="bg-gray-200 dark:bg-gray-800">
-                        <th class="border border-gray-300 dark:border-gray-700 px-4 py-2">Flag</th>
-                        <th class="border border-gray-300 dark:border-gray-700 px-4 py-2">Country</th>
-                        <th class="border border-gray-300 dark:border-gray-700 px-4 py-2">Date</th>
-                        <th class="border border-gray-300 dark:border-gray-700 px-4 py-2">Time</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <tr
-                        v-for="(item, index) in koica164Times"
-                        :key="index"
-                        :class="index % 2 === 0 ? 'bg-white dark:bg-gray-800' : 'bg-gray-100 dark:bg-gray-700'"
-                    >
-                        <!-- Flag 컬럼 -->
-                        <td
-                            class="border border-gray-300 dark:border-gray-700 px-4 py-2 flex justify-center items-center"
-                            style="height: auto;"
+            <!-- 반응형 테이블 -->
+            <div class="w-full max-w-screen-md overflow-x-auto">
+                <table class="table-auto border-collapse border border-gray-300 dark:border-gray-700 w-full text-center">
+                    <thead>
+                        <tr class="bg-gray-200 dark:bg-gray-800">
+                            <th class="border border-gray-300 dark:border-gray-700 px-4 py-2">국 기</th>
+                            <th class="border border-gray-300 dark:border-gray-700 px-4 py-2">나라이름</th>
+                            <th class="border border-gray-300 dark:border-gray-700 px-4 py-2 text-sm md:text-base whitespace-nowrap tracking-tight">월 - 일</th>
+                            <th class="border border-gray-300 dark:border-gray-700 px-4 py-2">시 간</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr
+                            v-for="(item, index) in koica164Times"
+                            :key="index"
+                            :class="index % 2 === 0 ? 'bg-white dark:bg-gray-800' : 'bg-gray-100 dark:bg-gray-700'"
                         >
-                            <template v-if="Array.isArray(getCountryCodes(item.country))">
-                                <img
-                                    v-for="(code, idx) in getCountryCodes(item.country)"
-                                    :key="idx"
-                                    :src="getFlagImage(code)"
-                                    alt="Flag"
-                                    class="inline-block w-8 h-8 mx-1"
-                                />
-                            </template>
-                            <template v-else>
-                                <img
-                                    :src="getFlagImage(getCountryCodes(item.country))"
-                                    alt="Flag"
-                                    class="w-8 h-8"
-                                />
-                            </template>
-                        </td>
-                        <!-- Country 컬럼 -->
-                        <td :class="getColorClass(index)" class="font-bold border border-gray-300 dark:border-gray-700 px-4 py-2">
-                            {{ item.country }}
-                        </td>
-                        <!-- Date 컬럼 -->
-                        <td class="border border-gray-300 dark:border-gray-700 px-4 py-2">
-                            {{ item.time.substring(2, 10) }}
-                        </td>
-                        <!-- Time 컬럼 -->
-                        <td :class="getColorClass(index)" class="border border-gray-300 dark:border-gray-700 px-4 py-2">
-                            {{ item.time.substring(11, 16) }}
-                        </td>
-                    </tr>
-                </tbody>
-            </table>
+                            <!-- Flag 컬럼 -->
+                            <td
+                                class="border border-gray-300 dark:border-gray-700 px-4 py-2 flex justify-center items-center"
+                                style="height: auto;"
+                            >
+                                <template v-if="Array.isArray(getCountryCodes(item.country))">
+                                    <img
+                                        v-for="(code, idx) in getCountryCodes(item.country)"
+                                        :key="idx"
+                                        :src="getFlagImage(code)"
+                                        alt="Flag"
+                                        class="inline-block w-8 h-8 mx-1"
+                                    />
+                                </template>
+                                <template v-else>
+                                    <img
+                                        :src="getFlagImage(getCountryCodes(item.country))"
+                                        alt="Flag"
+                                        class="w-8 h-8"
+                                    />
+                                </template>
+                            </td>
+                            <!-- Country 컬럼 -->
+                            <td
+                                :class="getColorClass(index)"
+                                class="font-bold border border-gray-300 dark:border-gray-700 px-4 py-2 whitespace-pre-line"
+                            >
+                                <!-- /를 줄바꿈으로 변경 -->
+                                {{ item.country.replaceAll('/', '\n') }}
+                            </td>
+                            <!-- Date 컬럼 -->
+                            <td class="border border-gray-300 dark:border-gray-700 px-2 py-1 text-sm w-16">
+                                {{ item.time.substring(5, 10) }}
+                            </td>
+                            <!-- Time 컬럼 -->
+                            <td :class="getColorClass(index)" class="border border-gray-300 dark:border-gray-700 px-4 py-2">
+                                {{ item.time.substring(11, 16) }}
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
         </div>
     </GuestLayout>
 </template>
