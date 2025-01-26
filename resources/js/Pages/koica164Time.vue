@@ -16,10 +16,9 @@ const getColorClass = (index) => {
         'text-red-600', // 대한민국
         'text-red-400', // 필리핀
         'text-orange-600', // 베트남/라오스/태국
-        'text-orange-400', // 방글라데시
+        'text-orange-400', // 방글라데시/키르기스스탄
         'text-yellow-600', // 네팔
-        'text-green-600', // 카자흐스탄
-        'text-green-400', // 우간다/탄자니아
+        'text-green-600', // 우간다/탄자니아
         'text-blue-400', // 르완다
         'text-blue-600', // 튀니지/카메룬
         'text-indigo-500', // 가나/세네갈
@@ -34,9 +33,8 @@ const countryCodes = {
     '대한민국': 'KR',
     '필리핀': 'PH',
     '베트남/라오스/태국': ['VN', 'LA', 'TH'],
-    '방글라데시': 'BD',
+    '방글라데시/키르기스스탄': ['BD', 'KG'],
     '네팔': 'NP',
-    '카자흐스탄': 'KZ',
     '우간다/탄자니아': ['UG', 'TZ'],
     '르완다': 'RW',
     '튀니지/카메룬': ['TN', 'CM'],
