@@ -1,81 +1,120 @@
 <script setup>
-import { Head } from '@inertiajs/vue3';
+import { Head, defineProps } from '@inertiajs/vue3';
+
 
 // Props 정의
 defineProps({
     koica164Times: {
-        type: Object,
+        type: Array,
         required: true,
     },
 });
+
+// 색상 클래스를 동적으로 계산
+const getColorClass = (index) => {
+    const colors = [
+        'text-red-600', // 대한민국
+        'text-red-400', // 필리핀
+        'text-orange-600', // 베트남/라오스/태국
+        'text-orange-400', // 방글라데시
+        'text-yellow-600', // 네팔
+        'text-green-600', // 카자흐스탄
+        'text-green-400', // 우간다/탄자니아
+        'text-blue-400', // 르완다
+        'text-blue-600', // 튀니지/카메룬
+        'text-indigo-500', // 가나/세네갈
+        'text-purple-400', // 볼리비아/도미니카공화국
+        'text-purple-600', // 페루/콜롬비아
+    ];
+    return colors[index % colors.length];
+};
+
+// 국가 코드
+const countryCodes = {
+    '대한민국': 'KR',
+    '필리핀': 'PH',
+    '베트남/라오스/태국': ['VN', 'LA', 'TH'],
+    '방글라데시': 'BD',
+    '네팔': 'NP',
+    '카자흐스탄': 'KZ',
+    '우간다/탄자니아': ['UG', 'TZ'],
+    '르완다': 'RW',
+    '튀니지/카메룬': ['TN', 'CM'],
+    '가나/세네갈': ['GH', 'SN'],
+    '볼리비아/도미니카공화국': ['BO', 'DO'],
+    '페루/콜롬비아': ['PE', 'CO'],
+};
+
+// 국가 이름에 맞는 코드 반환
+const getCountryCodes = (countryName) => {
+    return countryCodes[countryName] || null;
+};
+
+// 국기 이미지 경로 반환
+const getFlagImage = (countryCode) => {
+    if (!countryCode) return null;
+    return `/flags/${countryCode.toLowerCase()}.gif`;
+};
 </script>
 
 <template>
-    <Head title="World Time" />
-    <div class="min-h-screen flex flex-col items-center justify-center bg-gray-50 dark:bg-gray-900">
-        <h1 class="text-4xl font-bold text-black-800 dark:text-gray-100 mb-8">KOICA 164❤️</h1>
-
-        <div class="text-lg flex flex-col space-y-4">
-            <div class="flex items-center space-x-2">
-                <span class="text-red-600 font-bold">{{ koica164Times[0].country }}</span>:
-                <span class="text-black-500">{{ koica164Times[0].time.substring(2, 10) }}</span>
-                <span class="text-red-600">{{ koica164Times[0].time.substring(11, 16) }}</span>
-            </div>
-            <div class="flex items-center space-x-2">
-                <span class="text-red-400 font-bold">{{ koica164Times[1].country }}</span>:
-                <span class="text-black-500">{{ koica164Times[1].time.substring(2, 10) }}</span>
-                <span class="text-red-400">{{ koica164Times[1].time.substring(11, 16) }}</span>
-            </div>
-            <div class="flex items-center space-x-2">
-                <span class="text-orange-600 font-bold">{{ koica164Times[2].country }}</span>:
-                <span class="text-black-500">{{ koica164Times[2].time.substring(2, 10) }}</span>
-                <span class="text-orange-600">{{ koica164Times[2].time.substring(11, 16) }}</span>
-            </div>
-            <div class="flex items-center space-x-2">
-                <span class="text-orange-400 font-bold">{{ koica164Times[3].country }}</span>:
-                <span class="text-black-500">{{ koica164Times[3].time.substring(2, 10) }}</span>
-                <span class="text-orange-400">{{ koica164Times[3].time.substring(11, 16) }}</span>
-            </div>
-            <div class="flex items-center space-x-2">
-                <span class="text-yellow-600 font-bold">{{ koica164Times[4].country }}</span>:
-                <span class="text-black-500">{{ koica164Times[4].time.substring(2, 10) }}</span>
-                <span class="text-yellow-600">{{ koica164Times[4].time.substring(11, 16) }}</span>
-            </div>
-            <div class="flex items-center space-x-2">
-                <span class="text-green-600 font-bold">{{ koica164Times[5].country }}</span>:
-                <span class="text-black-500">{{ koica164Times[5].time.substring(2, 10) }}</span>
-                <span class="text-green-600">{{ koica164Times[5].time.substring(11, 16) }}</span>
-            </div>
-            <div class="flex items-center space-x-2">
-                <span class="text-green-400 font-bold">{{ koica164Times[6].country }}</span>:
-                <span class="text-black-500">{{ koica164Times[6].time.substring(2, 10) }}</span>
-                <span class="text-green-400">{{ koica164Times[6].time.substring(11, 16) }}</span>
-            </div>
-            <div class="flex items-center space-x-2">
-                <span class="text-blue-400 font-bold">{{ koica164Times[7].country }}</span>:
-                <span class="text-black-500">{{ koica164Times[7].time.substring(2, 10) }}</span>
-                <span class="text-blue-400">{{ koica164Times[7].time.substring(11, 16) }}</span>
-            </div>
-            <div class="flex items-center space-x-2">
-                <span class="text-blue-600 font-bold">{{ koica164Times[8].country }}</span>:
-                <span class="text-black-500">{{ koica164Times[8].time.substring(2, 10) }}</span>
-                <span class="text-blue-600">{{ koica164Times[8].time.substring(11, 16) }}</span>
-            </div>
-            <div class="flex items-center space-x-2">
-                <span class="text-indigo-500 font-bold">{{ koica164Times[9].country }}</span>:
-                <span class="text-black-500">{{ koica164Times[9].time.substring(2, 10) }}</span>
-                <span class="text-indigo-500">{{ koica164Times[9].time.substring(11, 16) }}</span>
-            </div>
-            <div class="flex items-center space-x-2">
-                <span class="text-purple-400 font-bold">{{ koica164Times[10].country }}</span>:
-                <span class="text-black-500">{{ koica164Times[10].time.substring(2, 10) }}</span>
-                <span class="text-purple-400">{{ koica164Times[10].time.substring(11, 16) }}</span>
-            </div>
-            <div class="flex items-center space-x-2">
-                <span class="text-purple-600 font-bold">{{ koica164Times[11].country }}</span>:
-                <span class="text-black-500">{{ koica164Times[11].time.substring(2, 10) }}</span>
-                <span class="text-purple-600">{{ koica164Times[11].time.substring(11, 16) }}</span>
-            </div>
+    <GuestLayout>
+        <Head title="KOICA 164" />
+        <div class="min-h-screen flex flex-col items-center justify-center bg-gray-50 dark:bg-gray-900">
+            <h1 class="text-4xl font-bold text-black-800 dark:text-gray-100 mb-8">KOICA 164❤️</h1>
+            <!-- 테이블 -->
+            <table class="table-auto border-collapse border border-gray-300 dark:border-gray-700 w-3/4 text-center">
+                <thead>
+                    <tr class="bg-gray-200 dark:bg-gray-800">
+                        <th class="border border-gray-300 dark:border-gray-700 px-4 py-2">Flag</th>
+                        <th class="border border-gray-300 dark:border-gray-700 px-4 py-2">Country</th>
+                        <th class="border border-gray-300 dark:border-gray-700 px-4 py-2">Date</th>
+                        <th class="border border-gray-300 dark:border-gray-700 px-4 py-2">Time</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr
+                        v-for="(item, index) in koica164Times"
+                        :key="index"
+                        :class="index % 2 === 0 ? 'bg-white dark:bg-gray-800' : 'bg-gray-100 dark:bg-gray-700'"
+                    >
+                        <!-- Flag 컬럼 -->
+                        <td
+                            class="border border-gray-300 dark:border-gray-700 px-4 py-2 flex justify-center items-center"
+                            style="height: auto;"
+                        >
+                            <template v-if="Array.isArray(getCountryCodes(item.country))">
+                                <img
+                                    v-for="(code, idx) in getCountryCodes(item.country)"
+                                    :key="idx"
+                                    :src="getFlagImage(code)"
+                                    alt="Flag"
+                                    class="inline-block w-8 h-8 mx-1"
+                                />
+                            </template>
+                            <template v-else>
+                                <img
+                                    :src="getFlagImage(getCountryCodes(item.country))"
+                                    alt="Flag"
+                                    class="w-8 h-8"
+                                />
+                            </template>
+                        </td>
+                        <!-- Country 컬럼 -->
+                        <td :class="getColorClass(index)" class="font-bold border border-gray-300 dark:border-gray-700 px-4 py-2">
+                            {{ item.country }}
+                        </td>
+                        <!-- Date 컬럼 -->
+                        <td class="border border-gray-300 dark:border-gray-700 px-4 py-2">
+                            {{ item.time.substring(2, 10) }}
+                        </td>
+                        <!-- Time 컬럼 -->
+                        <td :class="getColorClass(index)" class="border border-gray-300 dark:border-gray-700 px-4 py-2">
+                            {{ item.time.substring(11, 16) }}
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
         </div>
-    </div>
+    </GuestLayout>
 </template>
