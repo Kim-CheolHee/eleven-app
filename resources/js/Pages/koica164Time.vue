@@ -68,9 +68,9 @@ const getFlagImage = (countryCode) => {
                     <thead>
                         <tr class="bg-gray-200 dark:bg-gray-800">
                             <th class="border border-gray-300 dark:border-gray-700 px-4 py-2">국 기</th>
-                            <th class="border border-gray-300 dark:border-gray-700 px-4 py-2">나라이름</th>
+                            <th class="border border-gray-300 dark:border-gray-700 px-4 py-2 text-sm md:text-base whitespace-pre-wrap tracking-tight">나라 이름</th>
                             <th class="border border-gray-300 dark:border-gray-700 px-4 py-2 text-sm md:text-base whitespace-nowrap tracking-tight">월 - 일</th>
-                            <th class="border border-gray-300 dark:border-gray-700 px-4 py-2">시 간</th>
+                            <th class="border border-gray-300 dark:border-gray-700 px-4 py-2 text-sm md:text-base whitespace-nowrap tracking-tight">시 간</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -81,8 +81,7 @@ const getFlagImage = (countryCode) => {
                         >
                             <!-- Flag 컬럼 -->
                             <td
-                                class="border border-gray-300 dark:border-gray-700 px-4 py-2 flex justify-center items-center"
-                                style="height: auto;"
+                                class="border border-gray-300 dark:border-gray-700 px-4 py-2 flex flex-col justify-center items-center gap-1"
                             >
                                 <template v-if="Array.isArray(getCountryCodes(item.country))">
                                     <img
@@ -90,7 +89,7 @@ const getFlagImage = (countryCode) => {
                                         :key="idx"
                                         :src="getFlagImage(code)"
                                         alt="Flag"
-                                        class="inline-block w-8 h-8 mx-1"
+                                        class="w-8 h-8"
                                     />
                                 </template>
                                 <template v-else>
@@ -104,9 +103,8 @@ const getFlagImage = (countryCode) => {
                             <!-- Country 컬럼 -->
                             <td
                                 :class="getColorClass(index)"
-                                class="font-bold border border-gray-300 dark:border-gray-700 px-4 py-2 whitespace-pre-line"
+                                class="font-bold border border-gray-300 dark:border-gray-700 px-2 py-1 text-sm md:text-base whitespace-pre-line"
                             >
-                                <!-- /를 줄바꿈으로 변경 -->
                                 {{ item.country.replaceAll('/', '\n') }}
                             </td>
                             <!-- Date 컬럼 -->
