@@ -22,12 +22,17 @@ Route::get('/dashboard', function () {
 Route::get('/koica164-time', function () {
     $timezones = [
         '대한민국' => 'Asia/Seoul',
-        '베트남/라오스' => 'Asia/Ho_Chi_Minh',
+        '필리핀' => 'Asia/Manila',
+        '베트남/라오스/태국' => 'Asia/Ho_Chi_Minh',
+        '방글라데시' => 'Asia/Dhaka',
         '네팔' => 'Asia/Kathmandu',
-        '튀니지' => 'Africa/Tunis',
-        '가나' => 'Africa/Accra',
-        '볼리비아' => 'America/La_Paz',
-        '콜롬비아' => 'America/Bogota',
+        '카자흐스탄' => 'Asia/Almaty',
+        '우간다/탄자니아' => 'Africa/Kampala',
+        '르완다' => 'Africa/Kigali',
+        '튀니지/카메룬' => 'Africa/Tunis',
+        '가나/세네갈' => 'Africa/Accra',
+        '볼리비아/도미니카공화국' => 'America/La_Paz',
+        '페루/콜롬비아' => 'America/Bogota',
     ];
 
     $times = collect($timezones)->map(function ($timezone, $country) {
