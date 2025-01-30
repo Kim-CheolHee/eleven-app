@@ -54,6 +54,10 @@ Route::middleware('auth')->group(function () {
     Route::get('/info', function () {
         return Inertia::render('Info');
     })->name('info');
+
+    Route::get('/laos', function () {
+        return Inertia::render('Laos');
+    })->name('laos');
 });
 
 require __DIR__.'/auth.php';

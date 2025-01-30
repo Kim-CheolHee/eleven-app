@@ -45,6 +45,12 @@ const showingNavigationDropdown = ref(false);
                                 >
                                     Info
                                 </NavLink>
+                                <NavLink
+                                    :href="route('laos')"
+                                    :active="route().current('laos')"
+                                >
+                                    Presentation
+                                </NavLink>
                             </div>
                         </div>
 
