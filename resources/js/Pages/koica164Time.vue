@@ -1,5 +1,5 @@
 <script setup>
-import { Head, defineProps } from '@inertiajs/vue3';
+import { Head } from '@inertiajs/vue3';
 
 
 // Props 정의
