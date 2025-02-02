@@ -4,13 +4,60 @@ import { Head } from '@inertiajs/vue3';
 import { ref } from 'vue';
 
 const activeContent = ref(null);
+const activeImage_map = ref('/images/map_world.jpg');
+const activeImage_uni = ref('/images/uni_1.jpg');
+const activeImage_mil = ref('/images/mil_1.jpg');
+const activeImage_devel = ref('/images/devel_1.jpg');
+const activeImage_koica = ref('/images/koica_1.jpg');
 
+// 내용 토글 함수
 const showContent = (content) => {
-  activeContent.value = content;
+  if (activeContent.value === content) {
+    activeContent.value = null;
+  } else {
+    activeContent.value = content;
+  }
+};
+
+// 이미지 클릭 함수
+const changeImage_map = () => {
+  if (activeImage_map.value === '/images/map_world.jpg') {
+    activeImage_map.value = '/images/map_korea.jpg';
+  } else {
+    activeImage_map.value = '/images/map_world.jpg';
+  }
+};
+const changeImage_uni = () => {
+  if (activeImage_uni.value === '/images/uni_1.jpg') {
+    activeImage_uni.value = '/images/uni_2.jpg';
+  } else {
+    activeImage_uni.value = '/images/uni_1.jpg';
+  }
+};
+const changeImage_mil = () => {
+  if (activeImage_mil.value === '/images/mil_1.jpg') {
+    activeImage_mil.value = '/images/mil_2.jpg';
+  } else {
+    activeImage_mil.value = '/images/mil_1.jpg';
+  }
+};
+const changeImage_devel = () => {
+  if (activeImage_devel.value === '/images/devel_1.jpg') {
+    activeImage_devel.value = '/images/devel_2.jpg';
+  } else {
+    activeImage_devel.value = '/images/devel_1.jpg';
+  }
+};
+const changeImage_koica = () => {
+  if (activeImage_koica.value === '/images/koica_1.jpg') {
+    activeImage_koica.value = '/images/koica_2.jpg';
+  } else {
+    activeImage_koica.value = '/images/koica_1.jpg';
+  }
 };
 </script>
 
-<style scoped>
+<style>
   ul {
     list-style: none;
     padding: 0;
@@ -18,7 +65,7 @@ const showContent = (content) => {
 
   li {
     position: relative;
-    padding: 8px 12px;
+    padding: 2px 12px;
     cursor: pointer;
     background-color: #f9fafb;
     transition: background-color 0.2s;
@@ -42,19 +89,6 @@ const showContent = (content) => {
   li:hover,
   li.active {
     background-color: #e5e7eb;
-  }
-
-  /* 큰 화면에서는 마진을 적용하고 모바일에서는 제거 */
-  @media (min-width: 640px) {
-    .remove-whitespace-on-mobile {
-      margin-left: 16px; /* 원하는 마진 값 (예: 4는 1rem, 16은 4rem) */
-    }
-  }
-
-  @media (max-width: 640px) {
-    .remove-whitespace-on-mobile {
-      margin-left: 0; /* 모바일에서는 마진을 제거 */
-    }
   }
 </style>
 
@@ -88,92 +122,60 @@ const showContent = (content) => {
             </div>
             <div class="text-gray-800">
               <p class="text-xl font-semibold">▶ 경 력 <span class="ml-4">ປະຫວັດການເຮັດວຽກ</span></p>
-              <p class="text-lg mt-1 ml-4 font-normal">
-                - 03.2011 ~ 02.2015
-                <span class="block sm:inline">학사학위 취득 (일본어 전공)</span>
-                <span class="block sm:ml-4 remove-whitespace-on-mobile">
-                  ຮຽນຈົບປະລິນຍາ ວິຊາພາສາຍີ່ປຸ່ນ
-                </span>
-              </p>
-
-              <p class="text-lg ml-4 font-normal">
-                - 03.2015 ~ 06.2022
-                <span class="block sm:inline">대한민국 육군 장교</span>
-                <span class="block sm:ml-4 remove-whitespace-on-mobile">
-                  ນາຍທະຫານເກົາຫຼີ
-                </span>
-              </p>
-
-              <p class="text-lg ml-4 font-normal">
-                - 09.2022 ~ 04.2023
-                <span class="block sm:inline">IoT 기반 웹서비스 개발자 과정 수료</span>
-                <span class="block sm:ml-4 remove-whitespace-on-mobile">
-                  ສຳເລັດຫຼັກສູດການພັດທະນາເວັບຂອງ IoT
-                </span>
-              </p>
-
               <p class="text-lg ml-4 font-normal">
                 - 04.2023 ~ 03.2024
                 <span class="block sm:inline">(주)DTWORESOURCE - ICT엔지니어링</span>
-                <span class="block sm:ml-4 remove-whitespace-on-mobile">
+                <span class="block sm:ml-44">
                   ບໍລິສັດ DTWORESOURCE ວິສະວະກໍາ ICT
+                </span>
+              </p>
+              <p class="text-lg ml-4 font-normal">
+                - 09.2022 ~ 04.2023
+                <span class="block sm:inline">IoT 기반 웹서비스 개발자 과정 수료</span>
+                <span class="block sm:ml-44">
+                  ສຳເລັດຫຼັກສູດການພັດທະນາເວັບຂອງ IoT
+                </span>
+              </p>
+              <p class="text-lg ml-4 font-normal">
+                - 03.2015 ~ 06.2022
+                <span class="block sm:inline">대한민국 육군 장교</span>
+                <span class="block sm:ml-44">
+                  ນາຍທະຫານເກົາຫຼີ
+                </span>
+              </p>
+              <p class="text-lg mt-1 ml-4 font-normal">
+                - 03.2011 ~ 02.2015
+                <span class="block sm:inline">학사학위 취득 (일본어 전공)</span>
+                <span class="block sm:ml-44">
+                  ຮຽນຈົບປະລິນຍາ ວິຊາພາສາຍີ່ປຸ່ນ
                 </span>
               </p>
             </div>
           </div>
 
-          <div class="bg-gray-50 p-6 rounded-lg">
+          <div class="bg-gray-50 rounded-lg">
             <ul class="text-gray-800">
-              <li
-                :class="{ active: activeContent === 'a' }"
-                @click="showContent('a')"
-              >
-                사는 곳
-              </li>
-              <li
-                :class="{ active: activeContent === 'b' }"
-                @click="showContent('b')"
-              >
-                b
-              </li>
-              <li
-                :class="{ active: activeContent === 'c' }"
-                @click="showContent('c')"
-              >
-                c
-              </li>
-              <li
-                :class="{ active: activeContent === 'd' }"
-                @click="showContent('d')"
-              >
-                d
-              </li>
-              <li
-                :class="{ active: activeContent === 'e' }"
-                @click="showContent('e')"
-              >
-                e
-              </li>
+              <li :class="{ active: activeContent === 'a' }" @click="showContent('a')">사는 곳</li>
+              <li :class="{ active: activeContent === 'b' }" @click="showContent('b')">대학 시절</li>
+              <li :class="{ active: activeContent === 'c' }" @click="showContent('c')">군인 시절</li>
+              <li :class="{ active: activeContent === 'd' }" @click="showContent('d')">개발자</li>
+              <li :class="{ active: activeContent === 'e' }" @click="showContent('e')">코이카</li>
             </ul>
 
             <div v-if="activeContent === 'a'" class="mt-4">
-              <p class="text-gray-600">a에 대한 상세 내용: ...</p>
+              <img :src="activeImage_map" alt="Location Map" class="w-full h-auto rounded-lg shadow-md" @click="changeImage_map">
             </div>
             <div v-if="activeContent === 'b'" class="mt-4">
-              <h4 class="text-lg font-semibold text-gray-800">b</h4>
-              <p class="text-gray-600">b에 대한 상세 내용: ...</p>
+                <img :src="activeImage_uni" alt="university" class="w-full h-auto rounded-lg shadow-md" @click="changeImage_uni">
             </div>
             <div v-if="activeContent === 'c'" class="mt-4">
-              <h4 class="text-lg font-semibold text-gray-800">c</h4>
-              <p class="text-gray-600">c에 대한 상세 내용: ...</p>
+                <img :src="activeImage_mil" alt="army" class="w-full h-auto rounded-lg shadow-md" @click="changeImage_mil">
             </div>
             <div v-if="activeContent === 'd'" class="mt-4">
-              <h4 class="text-lg font-semibold text-gray-800">d</h4>
-              <p class="text-gray-600">d에 대한 상세 내용: ...</p>
+                <img :src="activeImage_devel" alt="army" class="w-full h-auto rounded-lg shadow-md" @click="changeImage_devel">
             </div>
             <div v-if="activeContent === 'e'" class="mt-4">
-              <h4 class="text-lg font-semibold text-gray-800">e</h4>
-              <p class="text-gray-600">e에 대한 상세 내용: ...</p>
+                <img :src="activeImage_koica" alt="army" class="w-full h-auto rounded-lg shadow-md" @click="changeImage_koica">
             </div>
           </div>
         </div>
