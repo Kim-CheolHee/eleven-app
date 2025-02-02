@@ -60,4 +60,17 @@ Route::middleware('auth')->group(function () {
     })->name('laos');
 });
 
+// Privacy 페이지 라우트 추가
+Route::get('/privacy-eu', function () {
+    return Inertia::render('Privacy/PrivacyEU');
+})->name('privacy.eu');
+
+Route::get('/privacy-us', function () {
+    return Inertia::render('Privacy/PrivacyUS');
+})->name('privacy.us');
+
+Route::get('/privacy-kr', function () {
+    return Inertia::render('Privacy/PrivacyKR');
+})->name('privacy.kr');
+
 require __DIR__.'/auth.php';
