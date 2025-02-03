@@ -23,6 +23,8 @@ const showContent = (content) => {
 const changeImage_map = () => {
   if (activeImage_map.value === '/images/map_world.jpg') {
     activeImage_map.value = '/images/map_korea.jpg';
+  } else if (activeImage_map.value === '/images/map_korea.jpg') {
+    activeImage_map.value = '/images/gwangju.jpg';
   } else {
     activeImage_map.value = '/images/map_world.jpg';
   }
@@ -54,6 +56,18 @@ const changeImage_koica = () => {
   } else {
     activeImage_koica.value = '/images/koica_1.jpg';
   }
+};
+
+const openYoutubeLink1 = () => {
+  window.open('https://www.youtube.com/watch?v=Q3lfAyjtu5U', '_blank');
+};
+
+const openYoutubeLink2 = () => {
+  window.open('https://www.youtube.com/shorts/hIaWihW3Ci8', '_blank');
+};
+
+const openYoutubeLink3 = () => {
+  window.open('https://youtu.be/XRJYENv5Qkg', '_blank');
 };
 </script>
 
@@ -105,6 +119,7 @@ const changeImage_koica = () => {
     <link rel="preload" href="/images/devel_2.jpg" as="image">
     <link rel="preload" href="/images/koica_1.jpg" as="image">
     <link rel="preload" href="/images/koica_2.jpg" as="image">
+    <link rel="preload" href="/images/gwangju.jpg" as="image">
   </Head>
 
   <AuthenticatedLayout>
@@ -170,9 +185,16 @@ const changeImage_koica = () => {
             <ul class="text-gray-800">
               <li :class="{ active: activeContent === 'a' }" @click="showContent('a')">사는 곳</li>
               <li :class="{ active: activeContent === 'b' }" @click="showContent('b')">대학 시절</li>
-              <li :class="{ active: activeContent === 'c' }" @click="showContent('c')">군인 시절</li>
+              <li :class="{ active: activeContent === 'c' }">
+                <span @click="showContent('c')" class="cursor-pointer">군인 시절</span>
+                <span @click="openYoutubeLink1" class="ml-2 cursor-pointer text-blue-600">🎥1</span>
+                <span @click="openYoutubeLink2" class="ml-2 cursor-pointer text-blue-600">🎥2</span>
+              </li>
               <li :class="{ active: activeContent === 'd' }" @click="showContent('d')">개발자</li>
-              <li :class="{ active: activeContent === 'e' }" @click="showContent('e')">코이카</li>
+              <li :class="{ active: activeContent === 'e' }">
+                <span @click="showContent('e')" class="cursor-pointer">코이카</span>
+                <span @click="openYoutubeLink3" class="ml-2 cursor-pointer text-blue-600">🎥</span>
+              </li>
             </ul>
 
             <div v-if="activeContent === 'a'" class="mt-4">
