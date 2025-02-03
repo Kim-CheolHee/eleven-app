@@ -93,7 +93,19 @@ const changeImage_koica = () => {
 </style>
 
 <template>
-  <Head title="Info" />
+  <Head>
+    <title>Info</title>
+    <link rel="preload" href="/images/map_world.jpg" as="image">
+    <link rel="preload" href="/images/map_korea.jpg" as="image">
+    <link rel="preload" href="/images/uni_1.jpg" as="image">
+    <link rel="preload" href="/images/uni_2.jpg" as="image">
+    <link rel="preload" href="/images/mil_1.jpg" as="image">
+    <link rel="preload" href="/images/mil_2.jpg" as="image">
+    <link rel="preload" href="/images/devel_1.jpg" as="image">
+    <link rel="preload" href="/images/devel_2.jpg" as="image">
+    <link rel="preload" href="/images/koica_1.jpg" as="image">
+    <link rel="preload" href="/images/koica_2.jpg" as="image">
+  </Head>
 
   <AuthenticatedLayout>
     <template #header>
@@ -147,7 +159,8 @@ const changeImage_koica = () => {
                 - 03.2011 ~ 02.2015
                 <span class="block sm:inline">학사학위 취득 (일본어 전공)</span>
                 <span class="block sm:ml-44">
-                  ຮຽນຈົບປະລິນຍາ ວິຊາພາສາຍີ່ປຸ່ນ
+                  ຮຽນຈົບປະລິນຍາຕີ ວິຊາພາສາຍີ່ປຸ່ນ
+
                 </span>
               </p>
             </div>
