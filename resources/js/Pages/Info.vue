@@ -183,16 +183,16 @@ const openYoutubeLink3 = () => {
 
           <div class="bg-gray-50 rounded-lg">
             <ul class="text-gray-800">
-              <li :class="{ active: activeContent === 'a' }" @click="showContent('a')">사는 곳</li>
-              <li :class="{ active: activeContent === 'b' }" @click="showContent('b')">대학 시절</li>
+              <li :class="{ active: activeContent === 'a' }" @click="showContent('a')">사는 곳 ສະຖານທີ່ອາໄສ</li>
+              <li :class="{ active: activeContent === 'b' }" @click="showContent('b')">대학 시절 ໄລຍະເວລາຢູ່ມະຫາວິທະຍາໄລ</li>
               <li :class="{ active: activeContent === 'c' }">
-                <span @click="showContent('c')" class="cursor-pointer">군인 시절</span>
+                <span @click="showContent('c')" class="cursor-pointer">군인 시절 ໄລຍະເວລາເປັນທະຫານ</span>
                 <span @click="openYoutubeLink1" class="ml-2 cursor-pointer text-blue-600">🎥1</span>
                 <span @click="openYoutubeLink2" class="ml-2 cursor-pointer text-blue-600">🎥2</span>
               </li>
-              <li :class="{ active: activeContent === 'd' }" @click="showContent('d')">개발자</li>
+              <li :class="{ active: activeContent === 'd' }" @click="showContent('d')">개발자 ນັກພັດທະນາ</li>
               <li :class="{ active: activeContent === 'e' }">
-                <span @click="showContent('e')" class="cursor-pointer">코이카</span>
+                <span @click="showContent('e')" class="cursor-pointer">KOICA ໂຄອິຄາ</span>
                 <span @click="openYoutubeLink3" class="ml-2 cursor-pointer text-blue-600">🎥</span>
               </li>
             </ul>
