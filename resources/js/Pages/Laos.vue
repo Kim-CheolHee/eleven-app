@@ -20,7 +20,11 @@ import { Head } from '@inertiajs/vue3';
             <div class="mx-auto max-w-7xl sm:px-6 lg:px-8">
                 <div class="overflow-hidden bg-white shadow-sm sm:rounded-lg">
                     <div class="p-6 bg-white">
-                        <h2 class="text-2xl font-serif mb-4">교육 프로그램 소개</h2>
+                        <h2 class="text-2xl font-semibold mb-4">모바일 시대</h2>
+                        <h2 class="text-xl font-serif mb-4">qr결제</h2>
+                        <h2 class="text-xl font-serif mb-4">사용앱</h2>
+
+                        <h2 class="text-2xl font-semibold mb-4">교육 프로그램 소개</h2>
 
                         <ul class="list-disc list-inside space-y-2">
                             <li>
