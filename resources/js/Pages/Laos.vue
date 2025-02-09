@@ -49,32 +49,32 @@ import { Head } from '@inertiajs/vue3';
                             </div>
                         </div>
 
-                        <h2 class="text-2xl font-semibold mt-12 mb-4">교육 프로그램 소개(ເເນະນຳໂປເເກຣມການສຶກສາ)</h2>
+                        <h2 class="text-2xl font-semibold mt-12 mb-8">교육 프로그램 소개(ເເນະນຳໂປເເກຣມການສຶກສາ)</h2>
 
                         <ul class="list-none list-inside space-y-6">
                             <li>
-                                <h3 class="text-xl font-semibold mb-4">Thunkable: 모바일 앱 개발(ການພັດທະນາເເອັບມືຖື)</h3>
-                                <p class="text-gray-700">학생들이 블록 코딩을 통해 쉽고 빠르게 모바일 앱을 개발할 수 있도록 지원합니다.</p>
-                                <p class="text-gray-700">ໃຫ້ນັກຮຽນຮຽນຮູ້ການຂຽນໂຄ້ດຜ່ານບ໊ອກໂຄ້ດເພື່ອໃຫ້ສາມາດພັດທະນາເເອັບມືຖືໄດ້ຢ່າງງ່າຍດາຍເເລະໄວວາ.</p>
+                                <h3 class="text-xl font-semibold mb-2">Thunkable: 모바일 앱 개발(ການພັດທະນາເເອັບມືຖື)</h3>
+                                <p class="text-xl text-gray-700">학생들이 블록 코딩을 통해 쉽고 빠르게 모바일 앱을 개발할 수 있도록 지원합니다.</p>
+                                <p class="text-xl text-gray-700">ໃຫ້ນັກຮຽນຮຽນຮູ້ການຂຽນໂຄ້ດຜ່ານບ໊ອກໂຄ້ດເພື່ອໃຫ້ສາມາດພັດທະນາເເອັບມືຖືໄດ້ຢ່າງງ່າຍດາຍເເລະໄວວາ.</p>
                                 <img src="/images/thunkable.jpg" alt="Thunkable" class="w-full max-w-2xl mt-2 rounded-lg mx-auto mb-8">
                             </li>
                             <li>
-                                <h3 class="text-xl font-semibold mb-4">Scratch: 창의적 코딩(ການຂຽນໂຄ້ດຢ່າງສ້າງສັນ)</h3>
-                                <p class="text-gray-700">기초적인 코딩 원리를 배우고, 재미있는 프로젝트를 만들며 논리적 사고를 키웁니다.</p>
-                                <p class="text-gray-700">ສອນຫລັກການພື້ນຖານຂອງການຂຽນໂຄ້ດພ້ອມສ້າງໂປຣເຈັກທີ່ມ່ວນຊື່ນຫນ້າສົນໃຈເພື່ອພັດທະນາຄວາມຄິດ.
+                                <h3 class="text-xl font-semibold mb-2">Scratch: 창의적 코딩(ການຂຽນໂຄ້ດຢ່າງສ້າງສັນ)</h3>
+                                <p class="text-xl text-gray-700">기초적인 코딩 원리를 배우고, 재미있는 프로젝트를 만들며 논리적 사고를 키웁니다.</p>
+                                <p class="text-xl text-gray-700">ສອນຫລັກການພື້ນຖານຂອງການຂຽນໂຄ້ດພ້ອມສ້າງໂປຣເຈັກທີ່ມ່ວນຊື່ນຫນ້າສົນໃຈເພື່ອພັດທະນາຄວາມຄິດ.
                                 </p>
                                 <img src="/images/scratch.jpg" alt="Scratch" class="w-full max-w-2xl mt-2 rounded-lg mx-auto mb-8">
                             </li>
                             <li>
-                                <h3 class="text-xl font-semibold mb-4">Kahoot!: 재미있는 한국어 학습(ການຮຽນຮູ້ພາສາເກົາຫລີທີ່ຫນ້າສົນໃນ)</h3>
-                                <p class="text-gray-700">퀴즈 게임을 통해 학생들이 흥미롭게 한국어 단어와 문법을 배울 수 있도록 합니다.</p>
-                                <p class="text-gray-700">ຮຽນຮູ້ຄຳສັບເເລະໄວຍາກອນພາສາເກົາຫລີຜ່ານເກມຕອບຄຳຖາມ.</p>
+                                <h3 class="text-xl font-semibold mb-2">Kahoot!: 재미있는 한국어 학습(ການຮຽນຮູ້ພາສາເກົາຫລີທີ່ຫນ້າສົນໃນ)</h3>
+                                <p class="text-xl text-gray-700">퀴즈 게임을 통해 학생들이 흥미롭게 한국어 단어와 문법을 배울 수 있도록 합니다.</p>
+                                <p class="text-xl text-gray-700">ຮຽນຮູ້ຄຳສັບເເລະໄວຍາກອນພາສາເກົາຫລີຜ່ານເກມຕອບຄຳຖາມ.</p>
                                 <img src="/images/kahoot.jpg" alt="Kahoot" class="w-full max-w-2xl mt-2 rounded-lg mx-auto mb-8">
                             </li>
                             <li>
-                                <h3 class="text-xl font-semibold mb-4">MS Office: 실무 소프트웨어 활용(ການນຳໃຊ້ງານຊ໊ອບເເວໃນວຽກຕົວຈິງ)</h3>
-                                <p class="text-gray-700">문서 작성, 데이터 정리, 프레젠테이션 제작 등 실무적인 소프트웨어 활용 능력을 기릅니다.</p>
-                                <p class="text-gray-700">ພັດທະນາທັກສະການໃຊ້ງານຊ໊ອບເເວທີ່ຈຳເປັນເຊັ່ນ:ການພິມເອກະສານ,ການຈັດການຂໍ້ມູນເເລະການສ້າງວຽກນຳສະເຫນີ.</p>
+                                <h3 class="text-xl font-semibold mb-2">MS Office: 실무 소프트웨어 활용(ການນຳໃຊ້ງານຊ໊ອບເເວໃນວຽກຕົວຈິງ)</h3>
+                                <p class="text-xl text-gray-700">문서 작성, 데이터 정리, 프레젠테이션 제작 등 실무적인 소프트웨어 활용 능력을 기릅니다.</p>
+                                <p class="text-xl text-gray-700">ພັດທະນາທັກສະການໃຊ້ງານຊ໊ອບເເວທີ່ຈຳເປັນເຊັ່ນ:ການພິມເອກະສານ,ການຈັດການຂໍ້ມູນເເລະການສ້າງວຽກນຳສະເຫນີ.</p>
                                 <img src="/images/ms_office.jpg" alt="MS Office" class="w-full max-w-2xl mt-2 rounded-lg mx-auto mb-8">
                             </li>
                         </ul>
