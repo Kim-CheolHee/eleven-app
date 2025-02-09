@@ -19,6 +19,9 @@ const showContent = (content) => {
   }
 };
 
+const showExperience = ref(true);
+const showCertificates = ref(false);
+
 // 이미지 클릭 함수
 const changeImage_map = () => {
   if (activeImage_map.value === '/images/map_world.jpg') {
@@ -148,36 +151,66 @@ const openYoutubeLink3 = () => {
               </div>
             </div>
             <div class="text-gray-800">
-              <p class="text-xl font-semibold">▶ 경 력 <span class="ml-4">ປະຫວັດການເຮັດວຽກ</span></p>
-              <p class="text-lg ml-4 font-normal">
-                - 04.2023 ~ 03.2024
-                <span class="block sm:inline">(주)DTWORESOURCE - ICT엔지니어링</span>
-                <span class="block sm:ml-44">
-                  ບໍລິສັດ DTWORESOURCE ວິສະວະກໍາ ICT
-                </span>
+              <!-- 경 력 -->
+              <p class="text-xl font-semibold cursor-pointer" @click="showExperience = !showExperience">
+                ▶ 경 력 <span class="ml-4">ປະຫວັດການເຮັດວຽກ</span>
               </p>
-              <p class="text-lg ml-4 font-normal">
-                - 09.2022 ~ 04.2023
-                <span class="block sm:inline">IoT 기반 웹서비스 개발자 과정 수료</span>
-                <span class="block sm:ml-44">
-                  ສຳເລັດຫຼັກສູດການພັດທະນາເວັບຂອງ IoT
-                </span>
+              <div v-if="showExperience">
+                <p class="text-lg ml-4 font-normal">
+                  - 04.2023 ~ 03.2024
+                  <span class="block sm:inline">(주)DTWORESOURCE - ICT엔지니어링</span>
+                  <span class="block sm:ml-44">
+                    ບໍລິສັດ DTWORESOURCE ວິສະວະກໍາ ICT
+                  </span>
+                </p>
+                <p class="text-lg ml-4 font-normal">
+                  - 09.2022 ~ 04.2023
+                  <span class="block sm:inline">IoT 기반 웹서비스 개발자 과정 수료</span>
+                  <span class="block sm:ml-44">
+                    ສຳເລັດຫຼັກສູດການພັດທະນາເວັບຂອງ IoT
+                  </span>
+                </p>
+                <p class="text-lg ml-4 font-normal">
+                  - 03.2015 ~ 06.2022
+                  <span class="block sm:inline">대한민국 육군 장교</span>
+                  <span class="block sm:ml-44">
+                    ນາຍທະຫານເກົາຫຼີ
+                  </span>
+                </p>
+                <p class="text-lg mt-1 ml-4 font-normal">
+                  - 03.2011 ~ 02.2015
+                  <span class="block sm:inline">학사학위 취득 (일본어 전공)</span>
+                  <span class="block sm:ml-44">
+                    ຮຽນຈົບປະລິນຍາຕີ ວິຊາພາສາຍີ່ປຸ່ນ
+                  </span>
+                </p>
+              </div>
+              <!-- 자격증 -->
+              <p class="text-xl font-semibold cursor-pointer mt-4" @click="showCertificates = !showCertificates">
+                ▶ 자격증 <span class="ml-4">ໃບຢັ້ງຢືນ</span>
               </p>
-              <p class="text-lg ml-4 font-normal">
-                - 03.2015 ~ 06.2022
-                <span class="block sm:inline">대한민국 육군 장교</span>
-                <span class="block sm:ml-44">
-                  ນາຍທະຫານເກົາຫຼີ
-                </span>
-              </p>
-              <p class="text-lg mt-1 ml-4 font-normal">
-                - 03.2011 ~ 02.2015
-                <span class="block sm:inline">학사학위 취득 (일본어 전공)</span>
-                <span class="block sm:ml-44">
-                  ຮຽນຈົບປະລິນຍາຕີ ວິຊາພາສາຍີ່ປຸ່ນ
-
-                </span>
-              </p>
+              <div v-if="showCertificates">
+                <p class="text-lg ml-4 font-normal">
+                  - 29.11.2024
+                  <span class="block sm:inline">ADSP(Advanced Data Analytics Semi-Professional)</span>
+                </p>
+                <p class="text-lg ml-4 font-normal">
+                  - 08.10.2024
+                  <span class="block sm:inline">PC정비사(PC Maintenance 2)</span>
+                </p>
+                <p class="text-lg ml-4 font-normal">
+                  - 05.04.2024
+                  <span class="block sm:inline">SQLD(Structured Query Language Developer)</span>
+                </p>
+                <p class="text-lg ml-4 font-normal">
+                  - 06.10.2023
+                  <span class="block sm:inline">리눅스마스터 2급(Linux Master Level 2)</span>
+                </p>
+                <p class="text-lg ml-4 font-normal">
+                  - 09.06.2023
+                  <span class="block sm:inline">정보처리기사(Engineer Information Processing)</span>
+                </p>
+              </div>
             </div>
           </div>
 
