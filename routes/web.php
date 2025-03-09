@@ -15,6 +15,28 @@ Route::get('/', function () {
     ]);
 })->name('welcome');
 
+// Play 페이지 (심리테스트, MBTI 등)
+Route::get('/play', function () {
+    return Inertia::render('Play');
+})->name('play');
+
+// 4/1, 4/2, 4/3, 4/4 각각 개별 페이지
+Route::get('/class/4-1', function () {
+    return Inertia::render('ClassBoard/FourOne');
+})->name('class.four_one');
+
+Route::get('/class/4-2', function () {
+    return Inertia::render('ClassBoard/FourTwo');
+})->name('class.four_two');
+
+Route::get('/class/4-3', function () {
+    return Inertia::render('ClassBoard/FourThree');
+})->name('class.four_three');
+
+Route::get('/class/4-4', function () {
+    return Inertia::render('ClassBoard/FourFour');
+})->name('class.four_four');
+
 Route::get('/dashboard', function () {
     return Inertia::render('Dashboard');
 })->middleware(['auth', 'verified'])->name('dashboard');
