@@ -14,15 +14,16 @@ class PostController extends Controller
      */
     public function index()
     {
-        $posts = Post::latest()->get();
+        $posts = Post::latest()->paginate(10); // 10개씩 페이징
 
-        // 포맷팅된 작성일자를 추가
-        foreach ($posts as $post) {
+        // 포맷팅된 작성일자 추가
+        $posts->getCollection()->transform(function ($post) {
             $post->formatted_created_at = Carbon::parse($post->created_at)->format('m/d H:i');
-        }
+            return $post;
+        });
 
         return Inertia::render('ClassBoard/FourOne', [
-            'posts' => $posts ?? [], // 🚀 posts가 null일 경우 빈 배열 반환
+            'posts' => $posts, // 페이지네이션 객체 그대로 전달
         ]);
     }
 
