@@ -45,10 +45,10 @@ const deletePost = (id) => {
 <template>
     <div class="p-6">
         <!-- 메인페이지 링크 추가 -->
-        <a href="https://mica92.com/" class="text-blue-500 mb-4 inline-block">메인 페이지로 가기</a>
+        <a href="https://mica92.com/" class="text-blue-500 inline-block">메인 페이지로 가기</a>
 
         <!-- 페이지 제목 (중앙 정렬) -->
-        <h1 class="text-3xl font-bold mb-4 text-center">4학년 1반 게시판</h1>
+        <h1 class="text-3xl font-bold mb-6 text-center">4학년 1반 게시판</h1>
 
         <!-- 화면 반으로 나누기: 좌측 - 게시글, 우측 - 게시글 작성 폼 -->
         <div class="flex">
