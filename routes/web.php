@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\PostController;
 use App\Http\Controllers\ProfileController;
 use Illuminate\Foundation\Application;
 use Illuminate\Support\Facades\Route;
@@ -21,9 +22,9 @@ Route::get('/play', function () {
 })->name('play');
 
 // 4/1, 4/2, 4/3, 4/4 각각 개별 페이지
-Route::get('/class/4-1', function () {
-    return Inertia::render('ClassBoard/FourOne');
-})->name('class.four_one');
+Route::get('/class/4-1', [PostController::class, 'index'])->name('class.four_one');
+Route::post('/class/4-1/store', [PostController::class, 'store'])->name('class.four_one.store');
+Route::delete('/class/4-1/{post}', [PostController::class, 'destroy'])->name('class.four_one.destroy');
 
 Route::get('/class/4-2', function () {
     return Inertia::render('ClassBoard/FourTwo');
