@@ -40,15 +40,26 @@ class PostController extends Controller
      */
     public function store(Request $request)
     {
-        $request->validate([
+        $validated = $request->validate([
             'title' => 'required|string|max:255',
             'content' => 'required|string',
-            'author' => 'required|string|max:50',
-            'password' => 'required|digits:4', // 숫자 4자리 검증
+            'author' => 'required|string|max:255',
+            'password' => 'required|digits:4',
+            'file' => 'nullable|file|max:5120', // 5MB 제한
         ]);
 
-        Post::create($request->only('title', 'content', 'author', 'password'));
+        $filePath = null;
+        if ($request->hasFile('file')) {
+            $filePath = $request->file('file')->storeAs('uploads', $request->file('file')->getClientOriginalName(), 'public');
+        }
 
+        Post::create([
+            'title' => $validated['title'],
+            'content' => $validated['content'],
+            'author' => $validated['author'],
+            'password' => $validated['password'],
+            'file_path' => $filePath,
+        ]);
         return redirect()->route('class.four_one');
     }
 

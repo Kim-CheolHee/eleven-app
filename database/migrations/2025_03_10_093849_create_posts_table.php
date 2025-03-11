@@ -17,6 +17,7 @@ return new class extends Migration
             $table->string('password', 4); // 4자리 숫자 비밀번호
             $table->string('title'); // 제목
             $table->text('content'); // 내용
+            $table->string('file_path')->nullable(); // 첨부파일 경로 추가
             $table->timestamps();
         });
     }

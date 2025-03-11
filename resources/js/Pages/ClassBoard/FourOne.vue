@@ -24,11 +24,47 @@ const form = useForm({
     content: '',
     author: '',
     password: '',
+    file: null,
 });
 
+const fileInput = ref(null);
+
+const file = ref(null); // 파일을 따로 저장
+
+const handleFileUpload = (event) => {
+    const selectedFile = event.target.files[0];
+
+    if (selectedFile) {
+        const fileSize = selectedFile.size / 1024 / 1024; // MB 단위로 파일 크기 계산
+        if (fileSize > 5) {
+            alert("파일 크기가 5MB를 초과합니다. 더 작은 파일을 선택해주세요.");
+            fileInput.value.value = ""; // 파일 선택 초기화
+            file.value = null;
+        } else {
+            file.value = selectedFile;
+        }
+    }
+};
+
 const submit = () => {
-    form.post(route('class.four_one.store'), {
-        onSuccess: () => form.reset(),
+    const formData = new FormData();
+    formData.append("title", form.title);
+    formData.append("content", form.content);
+    formData.append("author", form.author);
+    formData.append("password", form.password);
+
+    if (file.value) {
+        formData.append("file", file.value);
+    }
+
+    router.post(route("class.four_one.store"), formData, {
+        onSuccess: () => {
+            form.reset();
+            file.value = null;
+            if (fileInput.value) {
+                fileInput.value.value = "";
+            }
+        },
     });
 };
 
@@ -73,6 +109,12 @@ const deletePost = (id) => {
                             </button>
                         </div>
                         <p class="mt-2">{{ post.content }}</p>
+                        <!-- 첨부파일 다운로드 링크 -->
+                        <div v-if="post.file_path" class="mt-2">
+                            <a :href="`/storage/${post.file_path}`" class="text-blue-500" download>
+                                📎 {{ post.file_path.split('/').pop() }}
+                            </a>
+                        </div>
                     </div>
                 </div>
                 <p v-else class="text-gray-500">아직 게시글이 없습니다.</p>
@@ -97,6 +139,7 @@ const deletePost = (id) => {
                     <input v-model="form.password" type="password" placeholder="비밀번호 (4자리 숫자)" class="border p-2 w-full mb-2" required maxlength="4" />
                     <input v-model="form.title" type="text" placeholder="제목" class="border p-2 w-full mb-2" required />
                     <textarea v-model="form.content" placeholder="내용" class="border p-2 w-full mb-2" required></textarea>
+                    <input ref="fileInput" type="file" @change="handleFileUpload" class="border p-2 w-full mb-2" />
                     <button type="submit" class="bg-blue-500 text-white px-4 py-2">글 작성</button>
                 </form>
             </div>
