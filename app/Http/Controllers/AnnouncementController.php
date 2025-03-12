@@ -11,7 +11,11 @@ class AnnouncementController extends Controller
 {
     public function index()
     {
-        return Inertia::render('Announcement');
+        $announcements = Announcement::latest()->get(); // 최근 공지부터 정렬
+
+        return Inertia::render('Announcement', [
+            'announcements' => $announcements, // 공지사항 목록 전달
+        ]);
     }
 
     public function show($id)
@@ -42,6 +46,20 @@ class AnnouncementController extends Controller
             'file_path' => $filePath,
         ]);
 
-        return redirect()->route('dashboard');
+        return redirect()->route('announcement.index');
+    }
+
+    public function destroy($id)
+    {
+        $announcement = Announcement::findOrFail($id);
+
+        // 파일이 존재하면 삭제
+        if ($announcement->file_path) {
+            Storage::disk('public')->delete($announcement->file_path);
+        }
+
+        $announcement->delete();
+
+        return redirect()->route('announcement.index');
     }
 }

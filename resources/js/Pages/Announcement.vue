@@ -1,7 +1,11 @@
 <script setup>
 import AuthenticatedLayout from "@/Layouts/AuthenticatedLayout.vue";
-import { Head, useForm } from "@inertiajs/vue3";
-import { ref } from "vue";
+import { Head, useForm, usePage, router } from "@inertiajs/vue3";
+import { ref, computed } from "vue";
+
+// 서버에서 전달된 공지사항 목록 가져오기
+const page = usePage();
+const announcements = computed(() => page.props.announcements || []);
 
 // 공지사항 입력 폼
 const form = useForm({
@@ -29,22 +33,36 @@ const submit = () => {
         },
     });
 };
+
+// 공지사항 삭제 핸들러
+const deleteAnnouncement = (id) => {
+    if (confirm("⚠️ 해당 공지사항을 삭제하시겠습니까?")) {
+        router.delete(route("announcement.destroy", { id }), {
+            onSuccess: () => {
+                console.log("공지사항 삭제 성공!");
+            },
+            onError: (errors) => {
+                console.error("공지사항 삭제 실패!", errors);
+            },
+        });
+    }
+};
 </script>
 
 <template>
-    <Head title="공지사항 작성" />
+    <Head title="공지사항 관리" />
 
     <AuthenticatedLayout>
         <template #header>
             <h2 class="text-xl font-semibold leading-tight text-gray-800">
-                📢 공지사항 작성
+                📢 공지사항 관리
             </h2>
         </template>
 
-        <div class="py-12 flex justify-center">
+        <div class="py-12 flex flex-col items-center space-y-6">
+            <!-- 공지사항 작성 폼 -->
             <div class="w-full md:w-1/2 bg-white border border-gray-300 rounded-xl shadow-md p-6">
                 <form @submit.prevent="submit" class="space-y-4">
-                    <!-- 제목 입력 -->
                     <div>
                         <label class="block text-gray-700 font-semibold">제목</label>
                         <input
@@ -56,7 +74,6 @@ const submit = () => {
                         />
                     </div>
 
-                    <!-- 내용 입력 -->
                     <div>
                         <label class="block text-gray-700 font-semibold">내용</label>
                         <textarea
@@ -68,7 +85,6 @@ const submit = () => {
                         ></textarea>
                     </div>
 
-                    <!-- 파일 업로드 -->
                     <div>
                         <label for="file-upload"
                             class="border border-gray-300 p-3 rounded-lg w-full text-gray-600 cursor-pointer bg-gray-100 hover:bg-gray-200 transition block">
@@ -76,19 +92,42 @@ const submit = () => {
                         </label>
                         <input id="file-upload" ref="fileInput" type="file" @change="handleFileUpload" class="hidden" />
 
-                        <!-- 선택된 파일명 표시 -->
                         <p v-if="selectedFileName" class="mt-2 text-sm text-gray-700">
                             ✅ 선택된 파일: <span class="font-semibold">{{ selectedFileName }}</span>
                         </p>
                     </div>
 
-                    <!-- 제출 버튼 -->
                     <button
                         type="submit"
                         class="bg-blue-500 text-white w-full py-3 rounded-lg text-lg font-semibold hover:bg-blue-600 transition">
                         등록
                     </button>
                 </form>
+            </div>
+
+            <!-- 공지사항 목록 -->
+            <div class="w-full md:w-3/4 bg-white border border-gray-300 rounded-xl shadow-md p-6">
+                <h3 class="text-lg font-semibold text-gray-800 mb-4">📜 등록된 공지사항</h3>
+
+                <ul v-if="announcements.length" class="space-y-3">
+                    <li v-for="announcement in announcements" :key="announcement.id"
+                        class="flex flex-col md:flex-row md:items-center justify-between p-4 border rounded-lg bg-gray-50">
+                        <div>
+                            <p class="text-lg font-semibold">{{ announcement.title }}</p>
+                            <p class="text-gray-600 text-sm">{{ announcement.content }}</p>
+                            <div v-if="announcement.file_path" class="mt-1">
+                                <a :href="`/storage/${announcement.file_path}`" class="text-blue-500" download>
+                                    📎 {{ announcement.file_path.split('/').pop() }}
+                                </a>
+                            </div>
+                        </div>
+                        <button @click="deleteAnnouncement(announcement.id)"
+                            class="text-red-500 hover:text-red-700 flex items-center mt-2 md:mt-0">
+                            🗑 삭제
+                        </button>
+                    </li>
+                </ul>
+                <p v-else class="text-gray-500 text-center">❌ 등록된 공지사항이 없습니다.</p>
             </div>
         </div>
     </AuthenticatedLayout>
