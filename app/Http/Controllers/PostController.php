@@ -79,7 +79,7 @@ class PostController extends Controller
             'class_id' => $validated['class_id'], // 게시판 ID 저장
         ]);
 
-        return redirect()->route("class.four{$validated['class_id']}");
+        return redirect()->route("class.board", ['class_id' => $validated['class_id']]);
     }
 
     /**
@@ -109,11 +109,14 @@ class PostController extends Controller
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(Request $request, Post $post)
+    public function destroy(Request $request, $class_id, $post_id)
     {
         $request->validate([
             'password' => ['required', 'string', 'size:4'], // 4자리 숫자 확인
         ]);
+
+        // 직접 ID로 게시글 조회
+        $post = Post::where('class_id', $class_id)->findOrFail($post_id);
 
         if ($post->password !== $request->password) {
             return back()->withErrors([

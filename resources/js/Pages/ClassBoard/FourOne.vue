@@ -63,21 +63,34 @@ const handleFileUpload = (event) => {
 
 // 게시글 제출 핸들러
 const submit = () => {
-    // 비밀번호가 숫자가 아니면 경고창 표시 후 return
+    // 비밀번호 유효성 검사
     if (!/^\d{4}$/.test(form.password)) {
-        alert("⚠️ ລະຫັດຕ້ອງເປັນຈຳນວນ 4 ຕົວເລກ (Password must be a 4-digit number.)");
+        alert("⚠️ 4자리 숫자 비밀번호를 입력해주세요.");
         return;
     }
 
     const formData = new FormData();
     Object.keys(form).forEach((key) => {
-        if (form[key]) formData.append(key, form[key]);
+        if (form[key]) {
+            formData.append(key, form[key]);
+        }
     });
 
-    router.post(route("class.four_one.store"), formData, {
+    // 여기에 `class_id` 추가
+    formData.append("class_id", classId.value);
+
+    // Ziggy에서 반환하는 URL 확인
+    const routeUrl = route("class.board.store", { class_id: classId.value });
+
+    // Axios POST 요청
+    router.post(routeUrl, formData, {
         onSuccess: () => {
+            console.log("게시글 등록 성공!");
             form.reset();
             fileInput.value = null;
+        },
+        onError: (errors) => {
+            console.error("게시글 등록 실패!", errors);
         },
     });
 };
@@ -93,7 +106,10 @@ const deletePost = (id) => {
     }
 
     form.password = password;
-    form.delete(route("class.four_one.destroy", id), {
+
+    const routeUrl = route("class.board.destroy", { class_id: classId.value, post_id: id });
+
+    form.delete(routeUrl, {
         onError: (errors) => alert(errors.password || "❌ ລົບບໍ່ສຳເລັດ (Failed to delete post.)"),
     });
 };

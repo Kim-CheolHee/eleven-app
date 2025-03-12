@@ -24,7 +24,7 @@ Route::get('/play', function () {
 // 게시판 ID별로 하나의 라우트로 관리 (동적 라우트)
 Route::get('/class/{class_id}', [PostController::class, 'index'])->where('class_id', '[1-4]')->name('class.board');
 Route::post('/class/{class_id}/store', [PostController::class, 'store'])->where('class_id', '[1-4]')->name('class.board.store');
-Route::delete('/class/{class_id}/{post}', [PostController::class, 'destroy'])->where('class_id', '[1-4]')->name('class.board.destroy');
+Route::delete('/class/{class_id}/{post_id}', [PostController::class, 'destroy'])->where(['class_id' => '[1-4]', 'post_id' => '[0-9]+'])->name('class.board.destroy');
 
 Route::get('/dashboard', function () {
     return Inertia::render('Dashboard');
