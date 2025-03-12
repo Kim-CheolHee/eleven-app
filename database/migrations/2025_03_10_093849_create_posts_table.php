@@ -18,6 +18,7 @@ return new class extends Migration
             $table->string('title'); // 제목
             $table->text('content'); // 내용
             $table->string('file_path')->nullable(); // 첨부파일 경로 추가
+            $table->integer('class_id'); // 게시판 구분을 위한 컬럼 추가 (예: 1, 2, 3, 4)
             $table->timestamps();
         });
     }

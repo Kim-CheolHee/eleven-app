@@ -12,18 +12,31 @@ class PostController extends Controller
     /**
      * Display a listing of the resource.
      */
-    public function index()
+    public function index($class_id)
     {
-        $posts = Post::latest()->paginate(10);
+        $classMap = [
+            1 => 'One',
+            2 => 'Two',
+            3 => 'Three',
+            4 => 'Four',
+        ];
 
-        // 안전한 데이터 변환 방식 (`through()` 사용)
+        if (!isset($classMap[$class_id])) {
+            abort(404); // 유효하지 않은 class_id 요청 시 404 반환
+        }
+
+        $posts = Post::where('class_id', $class_id)
+                     ->latest()
+                     ->paginate(10);
+
         $posts->through(function ($post) {
-            $post->formatted_created_at = $post->created_at->format('d/m H:i'); // 라오스 스타일 d/m H:i
+            $post->formatted_created_at = $post->created_at->format('d/m H:i');
             return $post;
         });
 
-        return Inertia::render('ClassBoard/FourOne', [
+        return Inertia::render("ClassBoard/Four{$classMap[$class_id]}", [
             'posts' => $posts,
+            'class_id' => $class_id,
         ]);
     }
 
@@ -45,15 +58,16 @@ class PostController extends Controller
             'content' => 'required|string',
             'author' => 'required|string|max:255',
             'password' => 'required|digits:4',
-            'file' => 'nullable|file|max:5120', // 5MB 제한
+            'file' => 'nullable|file|max:5120',
+            'class_id' => 'required|integer|min:1|max:4', // 필수: 1~4만 허용
         ]);
 
         $filePath = null;
         if ($request->hasFile('file')) {
             $file = $request->file('file');
-            $timestamp = now()->format('Ymd_His'); // 타임스탬프 (년월일_시분초)
-            $fileName = $timestamp . '_' . $file->getClientOriginalName(); // 기존 파일명 유지 + 타임스탬프 추가
-            $filePath = $file->storeAs('uploads', $fileName, 'public'); // 저장
+            $timestamp = now()->format('Ymd_His');
+            $fileName = $timestamp . '_' . $file->getClientOriginalName();
+            $filePath = $file->storeAs('uploads', $fileName, 'public');
         }
 
         Post::create([
@@ -62,9 +76,10 @@ class PostController extends Controller
             'author' => $validated['author'],
             'password' => $validated['password'],
             'file_path' => $filePath,
+            'class_id' => $validated['class_id'], // 게시판 ID 저장
         ]);
 
-        return redirect()->route('class.four_one');
+        return redirect()->route("class.four{$validated['class_id']}");
     }
 
     /**

@@ -4,7 +4,6 @@ namespace Database\Seeders;
 
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\DB;
-use Illuminate\Support\Str;
 use Faker\Factory as Faker;
 
 class PostsTableSeeder extends Seeder
@@ -27,6 +26,7 @@ class PostsTableSeeder extends Seeder
                 'title' => $faker->sentence(4),
                 'content' => $faker->paragraph(3),
                 'file_path' => $filePath,
+                'class_id' => rand(1, 4), // ✅ 1~4 중 랜덤한 class_id 추가
                 'created_at' => now(),
                 'updated_at' => now(),
             ]);

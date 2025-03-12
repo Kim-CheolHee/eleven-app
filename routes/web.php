@@ -21,22 +21,10 @@ Route::get('/play', function () {
     return Inertia::render('Play');
 })->name('play');
 
-// 4/1, 4/2, 4/3, 4/4 각각 개별 페이지
-Route::get('/class/4-1', [PostController::class, 'index'])->name('class.four_one');
-Route::post('/class/4-1/store', [PostController::class, 'store'])->name('class.four_one.store');
-Route::delete('/class/4-1/{post}', [PostController::class, 'destroy'])->name('class.four_one.destroy');
-
-Route::get('/class/4-2', function () {
-    return Inertia::render('ClassBoard/FourTwo');
-})->name('class.four_two');
-
-Route::get('/class/4-3', function () {
-    return Inertia::render('ClassBoard/FourThree');
-})->name('class.four_three');
-
-Route::get('/class/4-4', function () {
-    return Inertia::render('ClassBoard/FourFour');
-})->name('class.four_four');
+// 게시판 ID별로 하나의 라우트로 관리 (동적 라우트)
+Route::get('/class/{class_id}', [PostController::class, 'index'])->where('class_id', '[1-4]')->name('class.board');
+Route::post('/class/{class_id}/store', [PostController::class, 'store'])->where('class_id', '[1-4]')->name('class.board.store');
+Route::delete('/class/{class_id}/{post}', [PostController::class, 'destroy'])->where('class_id', '[1-4]')->name('class.board.destroy');
 
 Route::get('/dashboard', function () {
     return Inertia::render('Dashboard');

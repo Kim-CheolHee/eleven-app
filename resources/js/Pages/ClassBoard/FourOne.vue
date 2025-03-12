@@ -4,6 +4,21 @@ import { ref } from 'vue';
 import { router } from '@inertiajs/vue3';
 import { computed } from 'vue';
 
+// 게시글 데이터 Props
+const props = defineProps({
+    posts: {
+        type: Object,
+        default: () => ({
+            data: [],
+            links: [],
+        }),
+    },
+    class_id: [String, Number], // 🔹 String도 허용하고 내부에서 변환
+});
+
+// `computed`를 사용하여 `class_id`를 Number로 변환
+const classId = computed(() => Number(props.class_id));
+
 // 현재 환경에 따라 메인 페이지 링크 변경
 const mainPageUrl = computed(() => {
     return window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1'
@@ -17,17 +32,6 @@ const navigate = (url) => {
         router.get(url);
     }
 };
-
-// 게시글 데이터 Props
-const props = defineProps({
-    posts: {
-        type: Object,
-        default: () => ({
-            data: [],
-            links: [],
-        }),
-    },
-});
 
 // 게시글 작성 폼
 const form = useForm({
@@ -59,7 +63,7 @@ const handleFileUpload = (event) => {
 
 // 게시글 제출 핸들러
 const submit = () => {
-    // ❗ 비밀번호가 숫자가 아니면 경고창 표시 후 return
+    // 비밀번호가 숫자가 아니면 경고창 표시 후 return
     if (!/^\d{4}$/.test(form.password)) {
         alert("⚠️ ລະຫັດຕ້ອງເປັນຈຳນວນ 4 ຕົວເລກ (Password must be a 4-digit number.)");
         return;
@@ -98,14 +102,23 @@ const deletePost = (id) => {
 <template>
     <div class="p-4 md:p-6 h-screen flex flex-col">
         <!-- 제목 & 메인페이지 링크 (반응형 적용) -->
-        <div class="bg-gray-100 border border-gray-300 rounded-xl shadow-md mb-3 p-4 flex flex-col md:flex-row items-center md:justify-between">
-            <a :href="mainPageUrl" class="text-blue-500 flex items-center space-x-2 hover:text-blue-700 transition mb-2 md:mb-0">
+        <div class="bg-gray-100 border border-gray-300 rounded-xl shadow-md mb-3 p-4 grid grid-cols-1 md:grid-cols-3 items-center text-center">
+            <!-- 모바일: 메인 페이지 이동이 맨 위 / 데스크탑: 왼쪽 정렬 -->
+            <a :href="mainPageUrl"
+                class="text-blue-500 flex items-center justify-center md:justify-start space-x-2 hover:text-blue-700 transition order-1 md:order-none">
                 <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="h-6 w-6">
                     <path stroke-linecap="round" stroke-linejoin="round" d="M10.5 19.5 3 12m0 0 7.5-7.5M3 12h18" />
                 </svg>
                 <span>ໄປໜ້າຫຼັກ (Go to Main Page)</span>
             </a>
-            <h1 class="text-3xl md:text-4xl font-bold text-gray-900 text-center">ມ4 ທັບ 1</h1>
+
+            <!-- 중앙 제목 (데스크탑에서도 정확히 중앙) -->
+            <h1 class="text-2xl sm:text-3xl md:text-4xl font-bold text-gray-900 order-2 md:order-none">
+                ມ4 ທັບ {{ class_id }}
+            </h1>
+
+            <!-- 오른쪽 빈 공간 (데스크탑 균형 유지) -->
+            <div class="hidden md:block order-3"></div>
         </div>
 
         <!-- 게시글 목록 & 글 작성 폼 -->
@@ -131,6 +144,21 @@ const deletePost = (id) => {
                             </a>
                         </div>
                     </div>
+                    <!-- ✅ 페이지네이션 추가 -->
+                    <div v-if="posts.links.length > 3" class="flex justify-center space-x-2 mt-4">
+                        <button
+                            v-for="(link, index) in posts.links"
+                            :key="index"
+                            @click="navigate(link.url)"
+                            v-html="link.label"
+                            :class="[
+                                'px-4 py-2 border rounded',
+                                link.active ? 'bg-blue-500 text-white' : 'bg-white text-gray-700',
+                                link.url ? 'cursor-pointer' : 'opacity-50 cursor-not-allowed'
+                            ]"
+                            :disabled="!link.url"
+                        ></button>
+                    </div>
                 </div>
                 <p v-else class="text-gray-500 text-center">ຍັງບໍ່ມີໂພສ (No posts yet)</p>
             </div>
@@ -139,6 +167,7 @@ const deletePost = (id) => {
             <div class="w-full md:w-1/2 h-full overflow-y-auto">
                 <div class="bg-white border border-gray-300 rounded-xl shadow-md p-6">
                     <form @submit.prevent="submit" class="space-y-3">
+                        <input type="hidden" v-model="form.class_id" />
                         <div class="flex flex-col md:flex-row gap-2">
                             <input v-model="form.author" type="text" placeholder="ຜູ້ຂຽນ (Author)"
                                 class="border border-gray-300 p-3 rounded-lg w-full md:w-1/2 focus:outline-none focus:ring-2 focus:ring-blue-400" required />

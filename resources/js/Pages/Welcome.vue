@@ -53,16 +53,16 @@ defineProps({
                         <Link :href="route('play')" class="px-5 py-2 text-2xl text-black ring-1 ring-transparent transition hover:text-black/70 focus:outline-none focus-visible:ring-[#FF2D20] dark:text-white dark:hover:text-white/80 dark:focus-visible:ring-white">
                             Play
                         </Link>
-                        <Link :href="route('class.four_one')" class="px-5 py-2 text-2xl text-black ring-1 ring-transparent transition hover:text-black/70 focus:outline-none focus-visible:ring-[#FF2D20] dark:text-white dark:hover:text-white/80 dark:focus-visible:ring-white">
+                        <Link :href="route('class.board', { class_id: 1 })" class="px-5 py-2 text-2xl text-black ring-1 ring-transparent transition hover:text-black/70 focus:outline-none focus-visible:ring-[#FF2D20] dark:text-white dark:hover:text-white/80 dark:focus-visible:ring-white">
                             4/1
                         </Link>
-                        <Link :href="route('class.four_two')" class="px-5 py-2 text-2xl text-black ring-1 ring-transparent transition hover:text-black/70 focus:outline-none focus-visible:ring-[#FF2D20] dark:text-white dark:hover:text-white/80 dark:focus-visible:ring-white">
+                        <Link :href="route('class.board', { class_id: 2 })" class="px-5 py-2 text-2xl text-black ring-1 ring-transparent transition hover:text-black/70 focus:outline-none focus-visible:ring-[#FF2D20] dark:text-white dark:hover:text-white/80 dark:focus-visible:ring-white">
                             4/2
                         </Link>
-                        <Link :href="route('class.four_three')" class="px-5 py-2 text-2xl text-black ring-1 ring-transparent transition hover:text-black/70 focus:outline-none focus-visible:ring-[#FF2D20] dark:text-white dark:hover:text-white/80 dark:focus-visible:ring-white">
+                        <Link :href="route('class.board', { class_id: 3 })" class="px-5 py-2 text-2xl text-black ring-1 ring-transparent transition hover:text-black/70 focus:outline-none focus-visible:ring-[#FF2D20] dark:text-white dark:hover:text-white/80 dark:focus-visible:ring-white">
                             4/3
                         </Link>
-                        <Link :href="route('class.four_four')" class="px-5 py-2 text-2xl text-black ring-1 ring-transparent transition hover:text-black/70 focus:outline-none focus-visible:ring-[#FF2D20] dark:text-white dark:hover:text-white/80 dark:focus-visible:ring-white">
+                        <Link :href="route('class.board', { class_id: 4 })" class="px-5 py-2 text-2xl text-black ring-1 ring-transparent transition hover:text-black/70 focus:outline-none focus-visible:ring-[#FF2D20] dark:text-white dark:hover:text-white/80 dark:focus-visible:ring-white">
                             4/4
                         </Link>
                     </div>
