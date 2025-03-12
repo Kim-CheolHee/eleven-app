@@ -1,18 +1,23 @@
 <?php
 
+use App\Http\Controllers\AnnouncementController;
 use App\Http\Controllers\PostController;
 use App\Http\Controllers\ProfileController;
+use App\Models\Announcement;
 use Illuminate\Foundation\Application;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
 
 Route::get('/', function () {
+    $notices = Announcement::latest()->take(5)->get();
+
     return Inertia::render('Welcome', [
         'koica164Time' => Route::has('koica164Time'),
         'canLogin' => Route::has('login'),
         'canRegister' => Route::has('register'),
         'laravelVersion' => Application::VERSION,
         'phpVersion' => PHP_VERSION,
+        'notices' => $notices, // 공지사항 데이터 전달
     ]);
 })->name('welcome');
 
@@ -62,13 +67,12 @@ Route::middleware('auth')->group(function () {
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
 
-    Route::get('/info', function () {
-        return Inertia::render('Info');
-    })->name('info');
+    Route::get('/info', function () { return Inertia::render('Info'); })->name('info');
+    Route::get('/laos', function () { return Inertia::render('Laos'); })->name('laos');
 
-    Route::get('/laos', function () {
-        return Inertia::render('Laos');
-    })->name('laos');
+    Route::get('/announcement', [AnnouncementController::class, 'index'])->name('announcement.index');
+    Route::get('/announcement/{id}', [AnnouncementController::class, 'show'])->name('announcement.show');
+    Route::post('/announcement', [AnnouncementController::class, 'store'])->name('announcement.store');
 });
 
 // Privacy 페이지 라우트 추가

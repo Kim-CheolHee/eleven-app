@@ -1,8 +1,7 @@
 <script setup>
 import { useForm } from '@inertiajs/vue3';
-import { ref } from 'vue';
+import { ref, computed } from 'vue';
 import { router } from '@inertiajs/vue3';
-import { computed } from 'vue';
 
 // 게시글 데이터 Props
 const props = defineProps({
@@ -13,7 +12,7 @@ const props = defineProps({
             links: [],
         }),
     },
-    class_id: [String, Number], // 🔹 String도 허용하고 내부에서 변환
+    class_id: [String, Number], // String도 허용하고 내부에서 변환
 });
 
 // `computed`를 사용하여 `class_id`를 Number로 변환
@@ -44,6 +43,7 @@ const form = useForm({
 
 // 파일 업로드를 위한 ref
 const fileInput = ref(null);
+const selectedFileName = ref(""); // 선택된 파일명을 저장
 
 // 파일 업로드 핸들러
 const handleFileUpload = (event) => {
@@ -55,8 +55,10 @@ const handleFileUpload = (event) => {
             alert("❌ ໄຟລ໌ໃຫຍ່ເກີນ 5MB, ກະລຸນາເລືອກໄຟລ໌ທີ່ໜ້ອຍກວ່າ (File size exceeds 5MB. Please select a smaller file.)");
             fileInput.value = null; // 파일 선택 초기화
             form.file = null;
+            selectedFileName.value = ""; // 파일명 초기화
         } else {
             form.file = selectedFile;
+            selectedFileName.value = selectedFile.name; // 파일명 저장
         }
     }
 };
@@ -206,6 +208,11 @@ const deletePost = (id) => {
                             📎 ເລືອກໄຟລ໌ (Select File)
                         </label>
                         <input id="file-upload" ref="fileInput" type="file" @change="handleFileUpload" class="hidden" />
+
+                        <!-- 선택된 파일명 표시 -->
+                        <p v-if="selectedFileName" class="mt-2 text-sm text-gray-700">
+                            ✅ 선택된 파일: <span class="font-semibold">{{ selectedFileName }}</span>
+                        </p>
 
                         <button type="submit"
                             class="bg-blue-500 text-white w-full py-3 rounded-lg text-lg font-semibold hover:bg-blue-600 transition">
