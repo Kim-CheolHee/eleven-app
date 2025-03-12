@@ -14,16 +14,16 @@ class PostController extends Controller
      */
     public function index()
     {
-        $posts = Post::latest()->paginate(10); // 10개씩 페이징
+        $posts = Post::latest()->paginate(10);
 
-        // 포맷팅된 작성일자 추가
-        $posts->getCollection()->transform(function ($post) {
-            $post->formatted_created_at = Carbon::parse($post->created_at)->format('m/d H:i');
+        // 안전한 데이터 변환 방식 (`through()` 사용)
+        $posts->through(function ($post) {
+            $post->formatted_created_at = $post->created_at->format('d/m H:i'); // 라오스 스타일 d/m H:i
             return $post;
         });
 
         return Inertia::render('ClassBoard/FourOne', [
-            'posts' => $posts, // 페이지네이션 객체 그대로 전달
+            'posts' => $posts,
         ]);
     }
 
@@ -50,7 +50,10 @@ class PostController extends Controller
 
         $filePath = null;
         if ($request->hasFile('file')) {
-            $filePath = $request->file('file')->storeAs('uploads', $request->file('file')->getClientOriginalName(), 'public');
+            $file = $request->file('file');
+            $timestamp = now()->format('Ymd_His'); // 타임스탬프 (년월일_시분초)
+            $fileName = $timestamp . '_' . $file->getClientOriginalName(); // 기존 파일명 유지 + 타임스탬프 추가
+            $filePath = $file->storeAs('uploads', $fileName, 'public'); // 저장
         }
 
         Post::create([
@@ -60,6 +63,7 @@ class PostController extends Controller
             'password' => $validated['password'],
             'file_path' => $filePath,
         ]);
+
         return redirect()->route('class.four_one');
     }
 
@@ -93,11 +97,13 @@ class PostController extends Controller
     public function destroy(Request $request, Post $post)
     {
         $request->validate([
-            'password' => ['required', 'string', 'size:4'], // 문자열이며 정확히 4글자인지 확인
+            'password' => ['required', 'string', 'size:4'], // 4자리 숫자 확인
         ]);
 
         if ($post->password !== $request->password) {
-            return back()->withErrors(['password' => '비밀번호가 일치하지 않습니다.']);
+            return back()->withErrors([
+                'password' => '❌ ລະຫັດຜ່ານບໍ່ຖືກຕ້ອງ (Incorrect password.)'
+            ]);
         }
 
         $post->delete();
