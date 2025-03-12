@@ -39,8 +39,9 @@ defineProps({
                         Dashboard
                     </Link>
                     <template v-else>
-                        <Link :href="route('koica164_time')" class="text-lg font-semibold hover:text-gray-300">KOICA 164 TIME</Link>
+                        <!-- <Link :href="route('koica164_time')" class="text-lg font-semibold hover:text-gray-300">KOICA 164 TIME</Link> -->
                         <Link :href="route('login')" class="text-lg font-semibold hover:text-gray-300">Log in</Link>
+                        <!-- <Link :href="route('register')" class="text-lg font-semibold hover:text-gray-300">Register</Link> -->
                     </template>
                 </nav>
             </header>
