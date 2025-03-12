@@ -65,8 +65,8 @@ defineProps({
                     <ul class="mt-3 space-y-2">
                         <li v-for="notice in notices" :key="notice.id">
                             <div class="bg-gray-100 p-4 rounded-lg">
-                                <p class="font-semibold">{{ notice.title }}</p>
-                                <p class="text-sm text-gray-700">{{ notice.content }}</p>
+                                <p class="text-xl font-semibold">{{ notice.title }}</p>
+                                <p class="text-lg text-gray-700">{{ notice.content }}</p>
                                 <div v-if="notice.file_path" class="mt-2">
                                     <a :href="'/storage/' + notice.file_path" target="_blank" class="text-blue-600 hover:underline">
                                         📎 {{ notice.file_path.split("/").pop() }}
