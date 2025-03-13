@@ -121,6 +121,74 @@ const formatContent = (content) => {
     if (!content) return "";
     return content.replace(/\n/g, "<br>");
 };
+
+// 수정 모드 관련 상태
+const editMode = ref(null);
+const editForm = useForm({
+    title: "",
+    content: "",
+    password: " ", // 빈 문자열이 아닌 공백 추가
+    file: null,
+    file_path: "", // 기존 파일 경로 저장
+});
+const editSelectedFileName = ref("");
+
+// 수정할 게시글 로드
+const startEdit = (post) => {
+    editMode.value = post.id;
+    editForm.title = post.title;
+    editForm.content = post.content;
+    editForm.password = ""; // 비밀번호는 항상 새로 입력해야 함
+
+    // 기존 파일 정보 저장
+    editForm.file_path = post.file_path || "";
+    editSelectedFileName.value = post.file_path ? post.file_path.split("/").pop() : "";
+};
+
+// 파일 업로드 핸들러
+const handleEditFileUpload = (event) => {
+    const file = event.target.files[0];
+    if (file) {
+        editForm.file = file;
+        editSelectedFileName.value = file.name;
+    }
+};
+
+// 게시글 수정 핸들러
+const updatePost = (postId) => {
+    if (!/^\d{4}$/.test(editForm.password.trim())) {
+        alert("⚠️ ລະຫັດຕ້ອງເປັນ 4 ຕົວເລກ (Password must be 4 digits.)");
+        return;
+    }
+
+    const formData = new FormData();
+    formData.append("title", editForm.title);
+    formData.append("content", editForm.content);
+    formData.append("password", editForm.password.trim()); // 비밀번호 필수
+    formData.append("class_id", classId.value);
+    formData.append("_method", "PATCH"); // Laravel에서 PATCH로 인식하도록 추가
+
+    if (editForm.file) {
+        formData.append("file", editForm.file);
+    } else if (editForm.file_path) {
+        formData.append("file_path", editForm.file_path); // 기존 파일 유지
+    }
+
+    const routeUrl = route("class.board.update", { class_id: classId.value, post_id: postId });
+
+    router.post(routeUrl, formData, {
+        headers: { "Content-Type": "multipart/form-data" }, // 명시적으로 설정
+        onSuccess: () => {
+            editMode.value = null;
+            editForm.reset();
+            editSelectedFileName.value = "";
+        },
+        onError: (errors) => {
+            alert(errors.password || "❌ 수정 실패");
+        },
+    });
+};
+
 </script>
 
 <template>
@@ -151,24 +219,50 @@ const formatContent = (content) => {
             <div class="w-full md:w-1/2 pr-0 md:pr-4 h-full overflow-y-auto">
                 <div v-if="posts.data.length">
                     <div v-for="post in posts.data" :key="post.id" class="border p-4 mb-2 rounded-lg">
-                        <div class="flex flex-col md:flex-row md:items-center md:justify-between gap-2">
-                            <h2 class="text-xl font-bold">{{ post.title }}</h2>
-                            <p class="text-gray-600">{{ post.author }}</p>
-                            <p class="text-gray-500">{{ post.formatted_created_at }}</p>
-                            <button @click="deletePost(post.id)" class="text-red-500 md:ml-auto">
-                                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="h-6 w-6">
-                                    <path stroke-linecap="round" stroke-linejoin="round" d="m14.74 9-.346 9m-4.788 0L9.26 9m9.968-3.21c.342.052.682.107 1.022.166m-1.022-.165L18.16 19.673a2.25 2.25 0 0 1-2.244 2.077H8.084a2.25 2.25 0 0 1-2.244-2.077L4.772 5.79m14.456 0a48.108 48.108 0 0 0-3.478-.397m-12 .562c.34-.059.68-.114 1.022-.165m0 0a48.11 48.11 0 0 1 3.478-.397m7.5 0v-.916c0-1.18-.91-2.164-2.09-2.201a51.964 51.964 0 0 0-3.32 0c-1.18.037-2.09 1.022-2.09 2.201v.916m7.5 0a48.667 48.667 0 0 0-7.5 0" />
-                                </svg>
-                            </button>
-                        </div>
-                        <p class="mt-2" v-html="formatContent(post.content)"></p>
-                        <div v-if="post.file_path" class="mt-2">
-                            <a :href="`/storage/${post.file_path}`" class="text-blue-500" download>
-                                📎 {{ post.file_path.split("/").pop() }}
-                            </a>
-                        </div>
+                        <!-- 수정 모드가 아닐 때 -->
+                        <template v-if="editMode !== post.id">
+                            <div class="flex flex-col md:flex-row md:items-center md:justify-between gap-2">
+                                <h2 class="text-xl font-bold">{{ post.title }}</h2>
+                                <p class="text-gray-600">{{ post.author }}</p>
+                                <p class="text-gray-500">{{ post.formatted_created_at }}</p>
+
+                                <!-- 버튼 그룹 (수정, 삭제) -->
+                                <div class="flex gap-2">
+                                    <button @click="startEdit(post)" class="text-yellow-500 hover:text-yellow-700 text-lg">✏️</button>
+                                    <button @click="deletePost(post.id)" class="text-red-500 hover:text-red-700 text-lg">🗑</button>
+                                </div>
+                            </div>
+                            <p class="mt-2" v-html="formatContent(post.content)"></p>
+                            <div v-if="post.file_path" class="mt-2">
+                                <a :href="`/storage/${post.file_path}`" class="text-blue-500" download>
+                                    📎 {{ post.file_path.split("/").pop() }}
+                                </a>
+                            </div>
+                        </template>
+                        <!-- 수정 모드일 때 -->
+                        <template v-else>
+                            <div class="space-y-3 bg-gray-50 p-4 rounded-lg shadow-md">
+                                <input v-model="editForm.title" type="text" class="border p-3 w-full rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-400" placeholder="ຫົວຂໍ້ (Title)" />
+                                <textarea v-model="editForm.content" class="border p-3 w-full rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-400 resize-none" rows="4" placeholder="ເນື້ອໃນ (Content)"></textarea>
+                                <input v-model="editForm.password" type="password" placeholder="ລະຫັດຈຳນວນ 4 ຕົວເລກ (4-digit number password)" class="border p-3 w-full rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-400" />
+                                <!-- 파일 첨부 -->
+                                <label for="edit-file-upload" class="border border-gray-300 p-3 rounded-lg w-full text-gray-600 cursor-pointer bg-gray-100 hover:bg-gray-200 transition block">
+                                    📎 ເລືອກໄຟລ໌ (Select File)
+                                </label>
+                                <input id="edit-file-upload" type="file" @change="handleEditFileUpload" class="hidden" />
+                                <!-- 선택된 파일명 표시 -->
+                                <p v-if="editSelectedFileName" class="mt-2 text-sm text-gray-700">
+                                    ✅ **ໄຟລ໌ທີ່ເລືອກ (Selected File):** <span class="font-semibold">{{ editSelectedFileName }}</span>
+                                </p>
+                                <!-- 버튼 그룹 (가운데 정렬) -->
+                                <div class="flex justify-center gap-2">
+                                    <button @click="updatePost(post.id)" class="bg-blue-500 text-white px-4 py-2 rounded-lg hover:bg-blue-600 transition">💾 ບັນທຶກ (Save)</button>
+                                    <button @click="editMode = null" class="bg-gray-500 text-white px-4 py-2 rounded-lg hover:bg-gray-600 transition">❌ ຍົກເລີກ (Cancel)</button>
+                                </div>
+                            </div>
+                        </template>
                     </div>
-                    <!-- ✅ 페이지네이션 추가 -->
+                    <!-- 페이지네이션 추가 -->
                     <div v-if="posts.links.length > 3" class="flex justify-center space-x-2 mt-4">
                         <button
                             v-for="(link, index) in posts.links"
@@ -217,7 +311,7 @@ const formatContent = (content) => {
 
                         <!-- 선택된 파일명 표시 -->
                         <p v-if="selectedFileName" class="mt-2 text-sm text-gray-700">
-                            ✅ 선택된 파일: <span class="font-semibold">{{ selectedFileName }}</span>
+                            ✅ <span class="font-semibold">{{ selectedFileName }}</span>
                         </p>
 
                         <button type="submit"

@@ -45,6 +45,7 @@ Route::get('/dashboard', function () { return Inertia::render('Dashboard'); })->
 Route::get('/class/{class_id}', [PostController::class, 'index'])->where('class_id', '[1-4]')->name('class.board');
 Route::post('/class/{class_id}/store', [PostController::class, 'store'])->where('class_id', '[1-4]')->name('class.board.store');
 Route::delete('/class/{class_id}/{post_id}', [PostController::class, 'destroy'])->where(['class_id' => '[1-4]', 'post_id' => '[0-9]+'])->name('class.board.destroy');
+Route::patch('/class/{class_id}/{post_id}', [PostController::class, 'update'])->where(['class_id' => '[1-4]', 'post_id' => '[0-9]+'])->name('class.board.update');
 
 // Play 페이지 (심리테스트, MBTI 등)
 Route::get('/play', function () { return Inertia::render('Play');})->name('play');

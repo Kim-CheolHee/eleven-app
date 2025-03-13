@@ -5,6 +5,8 @@ namespace App\Http\Controllers;
 use App\Models\Post;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Storage;
 use Inertia\Inertia;
 
 class PostController extends Controller
@@ -101,9 +103,38 @@ class PostController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, Post $post)
+    public function update(Request $request, $class_id, $post_id)
     {
-        //
+        $post = Post::where('id', $post_id)->where('class_id', $class_id)->firstOrFail();
+
+        $validated = $request->validate([
+            'title' => 'required|string|max:255',
+            'content' => 'required|string',
+            'password' => 'required|string|min:4|max:4',
+            'file' => 'nullable|file|max:5120',
+        ]);
+
+        if ($post->password !== $request->input('password')) {
+            return back()->withErrors(['password' => '❌ ລະຫັດບໍ່ຖືກຕ້ອງ (Incorrect password)']);
+        }
+
+        $filePath = $post->file_path;
+        if ($request->hasFile('file')) {
+            if ($filePath) {
+                Storage::disk('public')->delete($filePath);
+            }
+            $file = $request->file('file');
+            $fileName = now()->format('Ymd_His') . '_' . $file->getClientOriginalName();
+            $filePath = $file->storeAs('uploads', $fileName, 'public');
+        }
+
+        $post->update([
+            'title' => $request->input('title'),
+            'content' => $request->input('content'),
+            'file_path' => $filePath,
+        ]);
+
+        return redirect()->route('class.board', ['class_id' => $class_id]);
     }
 
     /**
