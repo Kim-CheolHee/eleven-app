@@ -11,12 +11,10 @@ const mainPageUrl = computed(() => {
 
 // 게임 & 심리테스트 데이터
 const games = [
-    { id: 1, title: "Tic-Tac-Toe", image: "/images/tic-tac-toe.png", route: "tic_tac_toe" },
-    { id: 2, title: "Memory Game", image: "/images/memory-game.png", route: "memory_game" },
-    { id: 3, title: "Number Guessing", image: "/images/number-guess.png", route: "number_guess" },
-    { id: 4, title: "MBTI Test", image: "/images/mbti-test.png", route: "mbti_test" },
-    { id: 5, title: "Personality Quiz", image: "/images/personality-quiz.png", route: "personality_quiz" },
-    { id: 6, title: "Color Matching", image: "/images/color-match.png", route: "color_match" },
+    { id: 1, title: "Memory Game", image: "/images/memory-game.png", route: "memory_game" },
+    { id: 2, title: "Number Guessing", image: "/images/number-guess.png", route: "number_guess" },
+    { id: 3, title: "MBTI Test", image: "/images/mbti-test.png", route: "mbti_test" },
+    { id: 4, title: "Color Matching", image: "/images/color-match.png", route: "color_match" },
 ];
 </script>
 

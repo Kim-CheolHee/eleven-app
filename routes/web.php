@@ -49,11 +49,9 @@ Route::patch('/class/{class_id}/{post_id}', [PostController::class, 'update'])->
 
 // Play 페이지 (심리테스트, MBTI 등)
 Route::get('/play', function () { return Inertia::render('Play');})->name('play');
-Route::get('/tic-tac-toe', function () { return Inertia::render('Games/TicTacToe'); })->name('tic_tac_toe');
 Route::get('/memory-game', function () { return Inertia::render('Games/MemoryGame'); })->name('memory_game');
 Route::get('/number-guess', function () { return Inertia::render('Games/NumberGuess'); })->name('number_guess');
 Route::get('/mbti-test', function () { return Inertia::render('Tests/MBTITest'); })->name('mbti_test');
-Route::get('/personality-quiz', function () { return Inertia::render('Tests/PersonalityQuiz'); })->name('personality_quiz');
 Route::get('/color-match', function () { return Inertia::render('Games/ColorMatch'); })->name('color_match');
 
 // 학습 관련 라우트
