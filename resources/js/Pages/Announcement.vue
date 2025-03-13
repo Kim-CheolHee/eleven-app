@@ -47,6 +47,12 @@ const deleteAnnouncement = (id) => {
         });
     }
 };
+
+// 줄바꿈을 <br>로 변환하는 함수
+const formatContent = (content) => {
+    if (!content) return "";
+    return content.replace(/\n/g, "<br>");
+};
 </script>
 
 <template>
@@ -114,7 +120,7 @@ const deleteAnnouncement = (id) => {
                         class="flex flex-col md:flex-row md:items-center justify-between p-4 border rounded-lg bg-gray-50">
                         <div>
                             <p class="text-lg font-semibold">{{ announcement.title }}</p>
-                            <p class="text-gray-600 text-sm">{{ announcement.content }}</p>
+                            <p class="text-gray-600 text-sm" v-html="formatContent(announcement.content)"></p>
                             <div v-if="announcement.file_path" class="mt-1">
                                 <a :href="`/storage/${announcement.file_path}`" class="text-blue-500" download>
                                     📎 {{ announcement.file_path.split('/').pop() }}

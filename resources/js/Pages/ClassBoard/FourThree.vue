@@ -115,6 +115,12 @@ const deletePost = (id) => {
         onError: (errors) => alert(errors.password || "❌ ລົບບໍ່ສຳເລັດ (Failed to delete post.)"),
     });
 };
+
+// 줄바꿈을 <br>로 변환하는 함수
+const formatContent = (content) => {
+    if (!content) return "";
+    return content.replace(/\n/g, "<br>");
+};
 </script>
 
 <template>
@@ -155,7 +161,7 @@ const deletePost = (id) => {
                                 </svg>
                             </button>
                         </div>
-                        <p class="mt-2">{{ post.content }}</p>
+                        <p class="mt-2" v-html="formatContent(post.content)"></p>
                         <div v-if="post.file_path" class="mt-2">
                             <a :href="`/storage/${post.file_path}`" class="text-blue-500" download>
                                 📎 {{ post.file_path.split("/").pop() }}

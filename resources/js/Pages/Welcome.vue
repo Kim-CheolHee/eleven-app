@@ -9,9 +9,10 @@ const notices = computed(() => page.props.notices || []);
 // 선택된 공지사항 ID (토글용)
 const selectedNoticeId = ref(null);
 
-// 공지사항 클릭 시 토글
-const toggleNotice = (id) => {
-    selectedNoticeId.value = selectedNoticeId.value === id ? null : id;
+// 줄바꿈을 <br>로 변환하는 함수
+const formatContent = (content) => {
+    if (!content) return "";
+    return content.replace(/\n/g, "<br>");
 };
 
 defineProps({
@@ -20,6 +21,7 @@ defineProps({
     laravelVersion: { type: String, required: true },
     phpVersion: { type: String, required: true },
 });
+
 </script>
 
 <template>
@@ -69,7 +71,7 @@ defineProps({
                         <li v-for="notice in notices" :key="notice.id">
                             <div class="bg-gray-100 p-4 rounded-lg">
                                 <p class="text-xl font-semibold">{{ notice.title }}</p>
-                                <p class="text-lg text-gray-700">{{ notice.content }}</p>
+                                <p class="text-lg text-gray-700" v-html="formatContent(notice.content)"></p>
                                 <div v-if="notice.file_path" class="mt-2">
                                     <a :href="'/storage/' + notice.file_path" target="_blank" class="text-blue-600 hover:underline">
                                         📎 {{ notice.file_path.split("/").pop() }}
