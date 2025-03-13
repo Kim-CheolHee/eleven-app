@@ -141,20 +141,20 @@ onMounted(shuffleCards);
         <!-- 🔙 돌아가기 버튼 (화면 좌측 상단 고정) -->
         <div class="absolute top-4 left-4 md:top-2 md:left-4 z-10">
             <Link :href="route('play')" class="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700 transition">
-                🔙 돌아가기
+                🔙 ກັບຄືນ (Go Back)
             </Link>
         </div>
 
         <!-- 🏆 순위표 (모바일: 게임 위, 데스크톱: 왼쪽 고정) -->
         <div class="w-full sm:w-80 bg-white shadow-md p-4 rounded-lg max-h-[400px] sm:max-h-[600px] overflow-auto mb-4 md:mb-0 md:ml-4">
-            <h2 class="text-lg font-semibold mb-2">🏆 순위표</h2>
+            <h2 class="text-lg font-semibold mb-2">🏆 ຕາຕະລາງຄັ້ງລຳດັບ (Rankings)</h2>
             <table class="w-full text-left">
                 <thead>
                     <tr>
-                        <th class="border-b">순위</th>
-                        <th class="border-b">이름</th>
-                        <th class="border-b">시간(초)</th>
-                        <th class="border-b">시도</th>
+                        <th class="border-b">ລຳດັບ (Rank)</th>
+                        <th class="border-b">ຊື່ (Name)</th>
+                        <th class="border-b">ເວລາ (sec)</th>
+                        <th class="border-b">ພະຍາຍາມ (Moves)</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -174,8 +174,8 @@ onMounted(shuffleCards);
 
             <!-- 게임 완료 메시지 -->
             <div v-if="gameCompleted" class="bg-green-500 text-white px-6 py-3 rounded-lg text-xl text-center mb-4">
-                🎉 축하합니다! 게임을 완료했습니다!<br />
-                ⏳ <strong>경과 시간:</strong> {{ timer }}초 | 🔄 <strong>시도 횟수:</strong> {{ moves }}번
+                🎉 ຍິນດີດ້ວຍ! ເກມສຳເລັດແລ້ວ! (Congratulations! You completed the game!)<br />
+                ⏳ <strong>ເວລາ:</strong> {{ timer }} ວິນາທີ | 🔄 <strong>ຄວາມພະຍາຍາມ:</strong> {{ moves }}
 
                 <!-- 기록 저장 폼 (기록 저장 후 숨김) -->
                 <div v-if="!recordSaved" class="mt-3 flex flex-col items-center min-w-[250px]">
@@ -186,11 +186,11 @@ onMounted(shuffleCards);
                         class="p-2 border rounded text-black"
                     />
                     <button @click="saveRanking" class="mt-2 bg-white text-green-700 px-3 py-1 rounded">
-                        기록 저장
+                        ບັນທຶກ (Save)
                     </button>
                 </div>
                 <button @click="resetGame" class="mt-3 bg-white text-green-700 px-3 py-1 rounded">
-                    다시하기
+                    ໃໝ່ (Retry)
                 </button>
             </div>
 
@@ -210,8 +210,8 @@ onMounted(shuffleCards);
 
             <!-- ⏳ 게임 정보 (경과시간 & 시도 횟수) -->
             <div class="mt-6 text-lg">
-                <p>⏳ 경과 시간: <span class="font-semibold">{{ timer }}초</span></p>
-                <p>🔄 시도 횟수: <span class="font-semibold">{{ moves }}</span></p>
+                <p>⏳ ເວລາ(sec): <span class="font-semibold">{{ timer }} ວິນາທີ</span></p>
+                <p>🔄 ຄວາມພະຍາຍາມ(Moves): <span class="font-semibold">{{ moves }}</span></p>
             </div>
         </div>
     </div>
