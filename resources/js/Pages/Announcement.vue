@@ -7,12 +7,16 @@ import { ref, computed } from "vue";
 const page = usePage();
 const announcements = computed(() => page.props.announcements || []);
 
-// 공지사항 입력 폼
+// 공지사항 입력 폼 (새로운 공지 등록용)
 const form = useForm({
     title: "",
     content: "",
     file: null,
 });
+
+// 수정 모드 관련 상태값
+const editMode = ref(null); // 현재 수정 중인 공지사항 ID
+const editForm = useForm({ title: "", content: "", file: null });
 
 // 선택한 파일명 표시
 const fileInput = ref(null);
@@ -21,15 +25,15 @@ const selectedFileName = ref(""); // 선택된 파일명 저장
 const handleFileUpload = (event) => {
     const file = event.target.files[0];
     form.file = file;
-    selectedFileName.value = file ? file.name : ""; // 선택된 파일명 업데이트
+    selectedFileName.value = file ? file.name : "";
 };
 
-// 제출 핸들러
+// 공지사항 등록 핸들러
 const submit = () => {
     form.post(route("announcement.store"), {
         onSuccess: () => {
             form.reset();
-            selectedFileName.value = ""; // 제출 후 파일명 초기화
+            selectedFileName.value = "";
         },
     });
 };
@@ -46,6 +50,31 @@ const deleteAnnouncement = (id) => {
             },
         });
     }
+};
+
+// 수정 모드 활성화
+const enableEditMode = (announcement) => {
+    editMode.value = announcement.id;
+    editForm.title = announcement.title;
+    editForm.content = announcement.content;
+    editForm.file = null;
+};
+
+// 수정 취소
+const cancelEdit = () => {
+    editMode.value = null;
+};
+
+// 수정 완료 후 저장
+const updateAnnouncement = (id) => {
+    editForm.patch(route("announcement.update", { id }), {
+        onSuccess: () => {
+            editMode.value = null;
+        },
+        onError: (errors) => {
+            console.error("공지사항 수정 실패!", errors);
+        },
+    });
 };
 
 // 줄바꿈을 <br>로 변환하는 함수
@@ -118,7 +147,24 @@ const formatContent = (content) => {
                 <ul v-if="announcements.length" class="space-y-3">
                     <li v-for="announcement in announcements" :key="announcement.id"
                         class="flex flex-col md:flex-row md:items-center justify-between p-4 border rounded-lg bg-gray-50">
-                        <div>
+                        <!-- 수정 모드 -->
+                        <div v-if="editMode === announcement.id" class="w-full">
+                            <input v-model="editForm.title" class="border border-gray-300 p-2 rounded w-full mb-2" />
+                            <textarea v-model="editForm.content" rows="3" class="border border-gray-300 p-2 rounded w-full"></textarea>
+
+                            <div class="flex gap-2 mt-2">
+                                <button @click="updateAnnouncement(announcement.id)"
+                                    class="bg-green-500 text-white px-3 py-2 rounded hover:bg-green-600">
+                                    저장
+                                </button>
+                                <button @click="cancelEdit" class="bg-gray-500 text-white px-3 py-2 rounded hover:bg-gray-600">
+                                    취소
+                                </button>
+                            </div>
+                        </div>
+
+                        <!-- 일반 모드 -->
+                        <div v-else>
                             <p class="text-lg font-semibold">{{ announcement.title }}</p>
                             <p class="text-gray-600 text-sm" v-html="formatContent(announcement.content)"></p>
                             <div v-if="announcement.file_path" class="mt-1">
@@ -126,11 +172,12 @@ const formatContent = (content) => {
                                     📎 {{ announcement.file_path.split('/').pop() }}
                                 </a>
                             </div>
+
+                            <div class="flex gap-2 mt-2">
+                                <button @click="enableEditMode(announcement)" class="text-yellow-500 hover:text-yellow-700">✏ 수정</button>
+                                <button @click="deleteAnnouncement(announcement.id)" class="text-red-500 hover:text-red-700">🗑 삭제</button>
+                            </div>
                         </div>
-                        <button @click="deleteAnnouncement(announcement.id)"
-                            class="text-red-500 hover:text-red-700 flex items-center mt-2 md:mt-0">
-                            🗑 삭제
-                        </button>
                     </li>
                 </ul>
                 <p v-else class="text-gray-500 text-center">❌ 등록된 공지사항이 없습니다.</p>

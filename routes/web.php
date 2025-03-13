@@ -34,6 +34,7 @@ Route::middleware('auth')->group(function () {
     Route::get('/announcement', [AnnouncementController::class, 'index'])->name('announcement.index');
     Route::get('/announcement/{id}', [AnnouncementController::class, 'show'])->name('announcement.show');
     Route::post('/announcement', [AnnouncementController::class, 'store'])->name('announcement.store');
+    Route::patch('/announcement/{id}', [AnnouncementController::class, 'update'])->name('announcement.update');
     Route::delete('/announcement/{id}', [AnnouncementController::class, 'destroy'])->name('announcement.destroy');
 });
 

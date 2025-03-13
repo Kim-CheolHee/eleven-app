@@ -49,6 +49,23 @@ class AnnouncementController extends Controller
         return redirect()->route('announcement.index');
     }
 
+    public function update(Request $request, $id)
+    {
+        $announcement = Announcement::findOrFail($id);
+
+        $request->validate([
+            'title' => 'required|string|max:255',
+            'content' => 'required|string',
+        ]);
+
+        $announcement->update([
+            'title' => $request->title,
+            'content' => $request->content,
+        ]);
+
+        return redirect()->route('announcement.index');
+    }
+
     public function destroy($id)
     {
         $announcement = Announcement::findOrFail($id);
