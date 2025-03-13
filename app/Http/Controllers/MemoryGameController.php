@@ -11,7 +11,7 @@ class MemoryGameController extends Controller
     // 기록 불러오기
     public function index()
     {
-        $scores = MemoryGameScore::orderBy('time')->orderBy('moves')->take(10)->get();
+        $scores = MemoryGameScore::orderBy('time')->orderBy('moves')->take(20)->get();
         return Inertia::render('Games/MemoryGame', ['scores' => $scores]);
     }
 

@@ -25,8 +25,7 @@ const gameCompleted = ref(false);
 const timer = ref(0);
 const interval = ref(null);
 const gameStarted = ref(false);
-const playerName = ref("");
-const recordSaved = ref(false); // 기록 저장 여부 상태 추가
+const recordSaved = ref(false);
 
 // 카드 셔플 함수
 const shuffleCards = () => {
@@ -147,7 +146,7 @@ onMounted(shuffleCards);
         </div>
 
         <!-- 🏆 순위표 (모바일: 게임 위, 데스크톱: 왼쪽 고정) -->
-        <div class="w-full sm:w-80 bg-white shadow-md p-4 rounded-lg max-h-96 overflow-auto mb-4 md:mb-0 md:ml-4">
+        <div class="w-full sm:w-80 bg-white shadow-md p-4 rounded-lg max-h-[400px] sm:max-h-[600px] overflow-auto mb-4 md:mb-0 md:ml-4">
             <h2 class="text-lg font-semibold mb-2">🏆 순위표</h2>
             <table class="w-full text-left">
                 <thead>
@@ -159,7 +158,7 @@ onMounted(shuffleCards);
                     </tr>
                 </thead>
                 <tbody>
-                    <tr v-for="(rank, index) in rankings" :key="index">
+                    <tr v-for="(rank, index) in rankings.slice(0, 20)" :key="index">
                         <td class="border-b p-1 text-center">{{ index + 1 }}</td>
                         <td class="border-b p-1 text-center">{{ rank.name }}</td>
                         <td class="border-b p-1 text-center">{{ rank.time }}</td>
