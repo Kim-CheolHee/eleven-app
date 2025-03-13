@@ -49,14 +49,17 @@ defineProps({
             <!-- 🔹 메인 콘텐츠 -->
             <main class="flex flex-col items-center justify-center w-full max-w-4xl p-6">
                 <!-- 🔹 페이지 이동 버튼 -->
-                <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-5 gap-4 text-center">
+                <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-6 gap-4 text-center">
                     <Link :href="route('play')" class="px-5 py-3 bg-blue-600 hover:bg-blue-700 rounded-lg text-white text-lg">
                         Game 🎮
                     </Link>
                     <Link v-for="id in 4" :key="id" :href="route('class.board', { class_id: id })"
-                        class="px-5 py-3 bg-green-600 hover:bg-green-700 rounded-lg text-white text-lg">
-                        4/{{ id }}
-                    </Link>
+                    class="px-5 py-3 bg-green-600 hover:bg-green-700 rounded-lg text-white text-lg">
+                    4/{{ id }}
+                </Link>
+                <Link :href="route('study')" class="px-5 py-3 bg-blue-600 hover:bg-blue-700 rounded-lg text-white text-lg">
+                    Study 📖
+                </Link>
                 </div>
 
                 <!-- 공지사항 섹션 -->
