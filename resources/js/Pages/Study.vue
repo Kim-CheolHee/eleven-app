@@ -1,5 +1,5 @@
 <script setup>
-import { ref, computed } from "vue";
+import { ref, computed, shallowRef, defineAsyncComponent } from "vue";
 
 // 현재 환경에 따라 메인 페이지 링크 변경
 const mainPageUrl = computed(() => {
@@ -8,63 +8,167 @@ const mainPageUrl = computed(() => {
         : "https://mica92.com/";
 });
 
-// 현재 선택된 학습 콘텐츠
-const selectedTopic = ref("intro");
+// 현재 선택된 학습 항목
+const selectedTopic = ref("excel_intro");
+const selectedComponent = shallowRef(null);
 
-// 학습 목차 목록
-const topics = [
-    { id: "intro", title: "학습 소개" },
-    { id: "html", title: "HTML 기초" },
-    { id: "css", title: "CSS 디자인" },
-    { id: "js", title: "JavaScript 개요" },
-    { id: "vue", title: "Vue.js 시작하기" },
-    { id: "practice", title: "실습 예제" },
-];
+// 학습 항목 컴포넌트를 동적으로 불러오기
+const loadComponent = async (topicId) => {
+    selectedTopic.value = topicId;
+    try {
+        selectedComponent.value = defineAsyncComponent(() => import(`./Study/${topicId}.vue`));
+    } catch (error) {
+        console.error("컴포넌트를 불러오는 중 오류 발생:", error);
+        selectedComponent.value = null;
+    }
+};
 
-// 학습 콘텐츠
-const content = {
-    intro: "온라인 학습 공간에 오신 것을 환영합니다! 여기서는 웹 개발을 쉽게 배울 수 있어요.",
-    html: "HTML(HyperText Markup Language)은 웹 페이지의 구조를 만드는 언어입니다.",
-    css: "CSS(Cascading Style Sheets)는 웹 사이트의 디자인과 스타일을 정의하는 언어입니다.",
-    js: "JavaScript는 웹 페이지에 동적인 기능을 추가하는 프로그래밍 언어입니다.",
-    vue: "Vue.js는 프론트엔드 개발을 쉽게 해주는 JavaScript 프레임워크입니다.",
-    practice: "배운 내용을 직접 실습해 보세요! 간단한 프로젝트를 만들어 보세요.",
+// 학습 목차 사이드바 열림/닫힘 상태
+const isAsideOpen = ref(true);
+
+// 사이드바 토글 함수
+const toggleAside = () => {
+    isAsideOpen.value = !isAsideOpen.value;
+};
+
+// 과별 학습 목차
+const chapters = ref([
+    {
+        id: "chapter5",
+        titleLa: "ບົດທີ 5 ຄວາມຮູ້ພື້ນຖານກ່ຽວກັບ Microsoft Excel",
+        titleKr: "제5과 Microsoft Excel 기본",
+        topics: [
+            { id: "ExcelIntro", titleLa: "ການແນະນຳ Microsoft Excel", titleKr: "Microsoft Excel 소개" },
+            { id: "ExcelWorkbook", titleLa: "Microsoft Excel ແລະ Workbook", titleKr: "Microsoft Excel과 Workbook" },
+            { id: "ExcelNavigation", titleLa: "ການເຄື່ອນໄຫວ ແລະ ການເລື່ອນ Worksheet", titleKr: "이동 및 스크롤 Worksheet" },
+            { id: "ExcelSelection", titleLa: "ເທັກນິກການເລືອກ", titleKr: "선택 기술" },
+            { id: "ExcelEditing", titleLa: "ການແກ້ໄຂຂໍ້ມູນໃນ Worksheet", titleKr: "Worksheet 데이터 수정" },
+            { id: "ExcelSerial", titleLa: "ການໃສ່ຂໍ້ມູນໂດຍໃຊ້ຄຳສັ່ງລຳດັບ", titleKr: "시리얼 명령을 이용한 데이터 입력" },
+            { id: "ExcelSave", titleLa: "ບັນທຶກ Workbook", titleKr: "Workbook 저장" },
+            { id: "ExcelOpen", titleLa: "ເປີດ Workbook ທີ່ບັນທຶກໄວ້", titleKr: "저장된 Workbook 열기" },
+            { id: "ExcelCopyPaste", titleLa: "ການຄັດລອກ, ຕັດ, ວາງຂໍ້ມູນ", titleKr: "Data 복사, 잘라내기, 붙여넣기" },
+            { id: "ExcelUndo", titleLa: "ໃຊ້ຄວາມສາມາດ Undo", titleKr: "되돌리기 기능 사용" },
+            { id: "ExcelDelete", titleLa: "ການລຶບຂໍ້ມູນ", titleKr: "Data 삭제" },
+            { id: "ExcelColumns", titleLa: "ການແຊກ ແລະ ລຶບ Columns", titleKr: "Columns 삽입과 삭제" },
+            { id: "ExcelExit", titleLa: "ອອກຈາກ Excel", titleKr: "Excel 프로그램 종료" }
+        ],
+        isOpen: true
+    },
+    {
+        id: "chapter6",
+        titleLa: "ບົດທີ 6 ການຈັດຮູບແບບເຊວໃນ Microsoft Excel",
+        titleKr: "제6과 Excel 셀 서식 지정",
+        topics: [
+            { id: "ExcelFormatMerge", titleLa: "ຄວາມສາມາດ Merge Cells", titleKr: "셀 병합" },
+            { id: "ExcelFont", titleLa: "ປ່ຽນຟອນເທິງ", titleKr: "폰트 변경" },
+            { id: "ExcelSorting", titleLa: "ຈັດລຽງຂໍ້ມູນ", titleKr: "Data 정렬" },
+            { id: "ExcelColorFill", titleLa: "ປ່ຽນສີຟອນ ແລະ ສີເຕີມ", titleKr: "폰트 색상 변경 및 색 채우기" },
+            { id: "ExcelMargin", titleLa: "ຕັ້ງຄ່າ ແລະ ຍົກເລີກຂອບເຂດ", titleKr: "여백 설정 및 해제" }
+        ],
+        isOpen: false
+    },
+    {
+        id: "chapter7",
+        titleLa: "ບົດທີ 7 ການນຳໃຊ້ຄວາມສາມາດຂອງ Excel",
+        titleKr: "제7과 Excel 기능 활용",
+        topics: [
+            { id: "ExcelAutoSum", titleLa: "ໃຊ້ຟັງຊັນ Autosum ຄິດໄລນັບລວມ", titleKr: "Autosum 함수를 사용하여 합계 계산" },
+            { id: "ExcelCustomFormula", titleLa: "ຂຽນສູດຄິດໄລຂອງຕົນເອງ", titleKr: "나만의 공식 작성" },
+            { id: "ExcelPreview", titleLa: "ກວດສອບການພິມ ແລະ Preview", titleKr: "인쇄물 검토 및 미리보기" },
+            { id: "ExcelPrint", titleLa: "ພິມເອກະສານ Excel", titleKr: "종이 페이지 인쇄" }
+        ],
+        isOpen: false
+    },
+    {
+        id: "chapter8",
+        titleLa: "ບົດທີ 8 ສ້າງການວາດແຜນໃນ Excel",
+        titleKr: "제8과 Excel 차트 만들기",
+        topics: [
+            { id: "ExcelChartCreate", titleLa: "ໃຊ້ Chart Wizard ສ້າງແຜນພາບ", titleKr: "차트 마법사를 사용하여 차트 만들기" },
+            { id: "ExcelChartEdit", titleLa: "ເຄື່ອນຍ້າຍ ແລະ ປ່ຽນຂະໜາດຂອງ Chart", titleKr: "차트 이동 및 크기 변경" }
+        ],
+        isOpen: false
+    }
+]);
+
+// 과별 토글 함수
+const toggleChapter = (id) => {
+    const chapter = chapters.value.find(c => c.id === id);
+    if (chapter) {
+        chapter.isOpen = !chapter.isOpen;
+    }
 };
 </script>
 
+
 <template>
-    <div class="min-h-screen bg-gray-100 flex">
-        <!-- 📌 목차 (1/4) -->
-        <aside class="w-1/4 bg-white shadow-lg p-6 flex flex-col space-y-4">
-            <!-- 🏠 메인 페이지 이동 버튼 -->
-            <a :href="mainPageUrl"
-                class="flex flex-col items-start bg-blue-500 text-white px-4 py-2 rounded-lg shadow-md hover:bg-blue-600 transition">
-                <div class="flex items-center">
-                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" class="h-6 w-6 mr-2">
-                        <path stroke-linecap="round" stroke-linejoin="round" d="M10.5 19.5 3 12m0 0 7.5-7.5M3 12h18" />
-                    </svg>
-                    <span class="text-lg font-semibold">ໄປໜ້າຫຼັກ</span>
-                </div>
-                <span class="text-sm text-white/80 ml-8">(Go to Main Page)</span>
+    <div class="min-h-screen bg-gray-100 flex relative">
+        <!-- 📌 학습 목차 사이드바 -->
+        <aside
+            v-if="isAsideOpen"
+            class="w-1/4 bg-white shadow-lg p-6 flex flex-col space-y-4 relative transition-all duration-300"
+        >
+            <a :href="mainPageUrl" class="flex flex-col items-start bg-blue-500 text-white px-4 py-2 rounded-lg shadow-md hover:bg-blue-600 transition">
+                <span class="text-lg font-semibold">ໄປໜ້າຫຼັກ (Go to Main Page)</span>
             </a>
 
-            <!-- 학습 목차 -->
-            <h2 class="text-xl font-semibold">📌 학습 목차</h2>
-            <ul class="space-y-2">
-                <li v-for="topic in topics" :key="topic.id">
+            <h2 class="text-xl font-semibold">📌 ລາຍການຮຽນ 학습 목차</h2>
+            <ul class="space-y-4">
+                <li v-for="chapter in chapters" :key="chapter.id">
                     <button
-                        @click="selectedTopic = topic.id"
-                        :class="['w-full text-left px-4 py-3 rounded-lg text-lg font-medium', selectedTopic === topic.id ? 'bg-blue-500 text-white' : 'bg-gray-200 hover:bg-gray-300']">
-                        {{ topic.title }}
+                        @click="toggleChapter(chapter.id)"
+                        class="w-full text-left px-4 py-3 rounded-lg text-lg font-semibold flex flex-col relative transition"
+                        :class="chapter.isOpen ? 'bg-green-700 text-white' : 'bg-green-300 text-black hover:bg-green-400'"
+                    >
+                        <div class="flex justify-between items-center">
+                            <div>
+                                <span :class="chapter.isOpen ? 'text-white' : 'text-blue-600'">
+                                    {{ chapter.titleLa }}
+                                </span>
+                                <br />
+                                <span class="text-black">
+                                    {{ chapter.titleKr }}
+                                </span>
+                            </div>
+                            <!-- 화살표 아이콘 -->
+                            <span class="text-xl" :class="chapter.isOpen ? 'text-white' : 'text-gray-700'">
+                                {{ chapter.isOpen ? '▼' : '▲' }}
+                            </span>
+                        </div>
                     </button>
+
+                    <ul v-if="chapter.isOpen" class="ml-4 space-y-2">
+                        <li v-for="topic in chapter.topics" :key="topic.id">
+                            <button
+                                @click="loadComponent(topic.id)"
+                                class="w-full text-left px-4 py-2 rounded-lg text-base flex flex-col"
+                                :class="selectedTopic === topic.id ? 'bg-blue-500 text-white' : 'bg-gray-200 hover:bg-gray-300'"
+                            >
+                                <span :class="selectedTopic === topic.id ? 'text-white' : 'text-blue-600'">
+                                    {{ topic.titleLa }}
+                                </span>
+                                <span class="text-black">
+                                    {{ topic.titleKr }}
+                                </span>
+                            </button>
+                        </li>
+                    </ul>
                 </li>
             </ul>
         </aside>
 
-        <!-- 📚 학습 콘텐츠 (3/4) -->
-        <main class="w-3/4 p-10">
-            <h1 class="text-3xl font-bold mb-6">{{ topics.find(t => t.id === selectedTopic)?.title }}</h1>
-            <p class="text-lg text-gray-700">{{ content[selectedTopic] }}</p>
+        <!-- 📌 사이드바 토글 버튼 -->
+        <button
+            @click="toggleAside"
+            class="fixed top-1/2 left-0 transform -translate-y-1/2 bg-gray-500 text-white p-3 rounded-r-lg shadow-md z-50 transition-all duration-300"
+            :class="isAsideOpen ? 'left-[25%]' : 'left-0'"
+        >
+            {{ isAsideOpen ? '◀' : '▶' }}
+        </button>
+
+        <!-- 📚 학습 콘텐츠 -->
+        <main class="transition-all duration-300" :class="isAsideOpen ? 'w-3/4 p-10' : 'w-full p-10'">
+            <component :is="selectedComponent" />
         </main>
     </div>
 </template>
