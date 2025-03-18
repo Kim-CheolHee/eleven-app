@@ -160,7 +160,7 @@ const toggleChapter = (id) => {
         <!-- 📌 사이드바 토글 버튼 -->
         <button
             @click="toggleAside"
-            class="fixed top-1/2 left-0 transform -translate-y-1/2 bg-gray-500 text-white p-3 rounded-r-lg shadow-md z-50 transition-all duration-300"
+            class="fixed top-1/2 left-0 transform -translate-y-1/2 bg-gray-500 text-white p-2 rounded-r-lg shadow-md z-50 transition-all duration-300"
             :class="isAsideOpen ? 'left-[25%]' : 'left-0'"
         >
             {{ isAsideOpen ? '◀' : '▶' }}
