@@ -85,7 +85,7 @@ defineProps({
                         </div>
 
                         <!-- 🔹 공지사항 이미지 출력 (오른쪽) -->
-                        <div class="col-span-1 bg-gray-200 rounded-lg flex flex-col items-center p-4">
+                        <div class="col-span-1 bg-gray-200 rounded-lg flex flex-col items-center">
                             <div v-if="notices && notices.length" class="w-full space-y-2">
                                 <template v-for="(notice, index) in notices" :key="index">
                                     <div v-if="notice?.image_path" class="w-full flex justify-center">
