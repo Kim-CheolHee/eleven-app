@@ -41,45 +41,62 @@ defineProps({
                         Dashboard
                     </Link>
                     <template v-else>
-                        <!-- <Link :href="route('koica164_time')" class="text-lg font-semibold hover:text-gray-300">KOICA 164 TIME</Link> -->
                         <Link :href="route('login')" class="text-lg font-semibold hover:text-gray-300">Log in</Link>
-                        <!-- <Link :href="route('register')" class="text-lg font-semibold hover:text-gray-300">Register</Link> -->
                     </template>
                 </nav>
             </header>
 
             <!-- 🔹 메인 콘텐츠 -->
-            <main class="flex flex-col items-center justify-center w-full max-w-4xl p-6">
+            <main class="flex flex-col items-center justify-center w-full max-w-5xl p-6">
                 <!-- 🔹 페이지 이동 버튼 -->
                 <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-6 gap-4 text-center">
                     <Link :href="route('play')" class="px-5 py-3 bg-blue-600 hover:bg-blue-700 rounded-lg text-white text-lg">
                         Game 🎮
                     </Link>
                     <Link v-for="id in 4" :key="id" :href="route('class.board', { class_id: id })"
-                    class="px-5 py-3 bg-green-600 hover:bg-green-700 rounded-lg text-white text-lg">
-                    4/{{ id }}
-                </Link>
-                <Link :href="route('study')" class="px-5 py-3 bg-blue-600 hover:bg-blue-700 rounded-lg text-white text-lg">
-                    Study 📖
-                </Link>
+                        class="px-5 py-3 bg-green-600 hover:bg-green-700 rounded-lg text-white text-lg">
+                        4/{{ id }}
+                    </Link>
+                    <Link :href="route('study')" class="px-5 py-3 bg-blue-600 hover:bg-blue-700 rounded-lg text-white text-lg">
+                        Study 📖
+                    </Link>
                 </div>
 
                 <!-- 공지사항 섹션 -->
-                <div class="w-full bg-white/80 backdrop-blur-md shadow-lg rounded-lg mt-6 p-4 text-gray-800">
-                    <h2 class="text-2xl font-semibold text-center text-black">📢 ປະກາດ (Announcements)</h2>
-                    <ul class="mt-3 space-y-2">
-                        <li v-for="notice in notices" :key="notice.id">
-                            <div class="bg-gray-100 p-4 rounded-lg">
-                                <p class="text-xl font-semibold">{{ notice.title }}</p>
-                                <p class="text-lg text-gray-700" v-html="formatContent(notice.content)"></p>
-                                <div v-if="notice.file_path" class="mt-2">
-                                    <a :href="'/storage/' + notice.file_path" target="_blank" class="text-blue-600 hover:underline">
-                                        📎 {{ notice.file_path.split("/").pop() }}
-                                    </a>
-                                </div>
+                <div class="w-full bg-white/80 backdrop-blur-md shadow-lg rounded-lg mt-6 p-6 text-gray-800">
+                    <h2 class="text-2xl font-semibold text-center text-black mb-4">📢 ປະກາດ (Announcements)</h2>
+
+                    <div class="grid grid-cols-2 gap-4">
+                        <!-- 🔹 공지사항 목록 (왼쪽) -->
+                        <div class="col-span-1">
+                            <ul class="space-y-2">
+                                <li v-for="notice in notices" :key="notice.id">
+                                    <div class="bg-gray-100 p-4 rounded-lg">
+                                        <p class="text-xl font-semibold">{{ notice.title }}</p>
+                                        <p class="text-lg text-gray-700" v-html="formatContent(notice.content)"></p>
+                                        <div v-if="notice.file_path" class="mt-2">
+                                            <a :href="'/storage/' + notice.file_path" target="_blank" class="text-blue-600 hover:underline">
+                                                📎 {{ notice.file_path.split('/').pop() }}
+                                            </a>
+                                        </div>
+                                    </div>
+                                </li>
+                            </ul>
+                        </div>
+
+                        <!-- 🔹 공지사항 이미지 출력 (오른쪽) -->
+                        <div class="col-span-1 bg-gray-200 rounded-lg flex flex-col items-center p-4">
+                            <div v-if="notices && notices.length" class="w-full space-y-2">
+                                <template v-for="(notice, index) in notices" :key="index">
+                                    <div v-if="notice?.image_path" class="w-full flex justify-center">
+                                        <img :src="'/storage/' + notice.image_path"
+                                            class="rounded-lg shadow-md max-h-40 object-contain w-full"
+                                            alt="공지 이미지" />
+                                    </div>
+                                </template>
                             </div>
-                        </li>
-                    </ul>
+                        </div>
+                    </div>
                 </div>
             </main>
 

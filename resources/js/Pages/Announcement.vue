@@ -12,20 +12,32 @@ const form = useForm({
     title: "",
     content: "",
     file: null,
+    image: null,
 });
 
 // 수정 모드 관련 상태값
 const editMode = ref(null); // 현재 수정 중인 공지사항 ID
 const editForm = useForm({ title: "", content: "", file: null });
 
-// 선택한 파일명 표시
+// 선택된 파일명 저장 변수
 const fileInput = ref(null);
-const selectedFileName = ref(""); // 선택된 파일명 저장
+const selectedFileName = ref("");
+const selectedImageName = ref("");
 
+// 파일 업로드 핸들러
 const handleFileUpload = (event) => {
     const file = event.target.files[0];
     form.file = file;
     selectedFileName.value = file ? file.name : "";
+};
+
+// 이미지 업로드 핸들러 추가
+const handleImageUpload = (event) => {
+    const file = event.target.files[0];
+    if (file) {
+        selectedImageName.value = file.name;
+        form.image = file;
+    }
 };
 
 // 공지사항 등록 핸들러
@@ -34,6 +46,7 @@ const submit = () => {
         onSuccess: () => {
             form.reset();
             selectedFileName.value = "";
+            selectedImageName.value = "";
         },
     });
 };
@@ -129,6 +142,18 @@ const formatContent = (content) => {
 
                         <p v-if="selectedFileName" class="mt-2 text-sm text-gray-700">
                             ✅ 선택된 파일: <span class="font-semibold">{{ selectedFileName }}</span>
+                        </p>
+                    </div>
+
+                    <div>
+                        <label for="image-upload"
+                            class="border border-gray-300 p-3 rounded-lg w-full text-gray-600 cursor-pointer bg-gray-100 hover:bg-gray-200 transition block">
+                            🖼️ 이미지 첨부
+                        </label>
+                        <input id="image-upload" type="file" @change="handleImageUpload" accept="image/*" class="hidden" />
+
+                        <p v-if="selectedImageName" class="mt-2 text-sm text-gray-700">
+                            ✅ 선택된 이미지: <span class="font-semibold">{{ selectedImageName }}</span>
                         </p>
                     </div>
 

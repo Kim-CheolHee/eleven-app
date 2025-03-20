@@ -30,6 +30,7 @@ class AnnouncementController extends Controller
             'title' => 'required|string|max:255',
             'content' => 'required|string',
             'file' => 'nullable|file|max:5120', // 파일 업로드 제한 (최대 5MB)
+            'image' => 'nullable|image|max:5120', // 이미지 파일 제한 (최대 5MB)
         ]);
 
         $filePath = null;
@@ -40,10 +41,19 @@ class AnnouncementController extends Controller
             $filePath = $file->storeAs('announcements', $fileName, 'public'); // 저장 위치: storage/app/public/announcements
         }
 
+        $imagePath = null;
+        if ($request->hasFile('image')) {
+            $image = $request->file('image');
+            $timestamp = now()->format('Ymd_His');
+            $imageName = $timestamp . '_' . $image->getClientOriginalName();
+            $imagePath = $image->storeAs('announcements/images', $imageName, 'public');
+        }
+
         Announcement::create([
             'title' => $request->title,
             'content' => $request->content,
             'file_path' => $filePath,
+            'image_path' => $imagePath,
         ]);
 
         return redirect()->route('announcement.index');
@@ -56,11 +66,24 @@ class AnnouncementController extends Controller
         $request->validate([
             'title' => 'required|string|max:255',
             'content' => 'required|string',
+            'image' => 'nullable|image|max:5120',
         ]);
+
+        $imagePath = $announcement->image_path;
+        if ($request->hasFile('image')) {
+            if ($announcement->image_path) {
+                Storage::disk('public')->delete($announcement->image_path);
+            }
+            $image = $request->file('image');
+            $timestamp = now()->format('Ymd_His');
+            $imageName = $timestamp . '_' . $image->getClientOriginalName();
+            $imagePath = $image->storeAs('announcements/images', $imageName, 'public');
+        }
 
         $announcement->update([
             'title' => $request->title,
             'content' => $request->content,
+            'image_path' => $imagePath, // 이미지 업데이트
         ]);
 
         return redirect()->route('announcement.index');
@@ -70,9 +93,12 @@ class AnnouncementController extends Controller
     {
         $announcement = Announcement::findOrFail($id);
 
-        // 파일이 존재하면 삭제
         if ($announcement->file_path) {
             Storage::disk('public')->delete($announcement->file_path);
+        }
+
+        if ($announcement->image_path) {
+            Storage::disk('public')->delete($announcement->image_path);
         }
 
         $announcement->delete();

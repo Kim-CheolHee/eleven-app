@@ -11,7 +11,8 @@ return new class extends Migration {
             $table->id();
             $table->string('title');
             $table->text('content');
-            $table->string('file_path')->nullable()->comment('첨부파일 경로'); // 파일 저장 컬럼 추가
+            $table->string('file_path')->nullable()->comment('첨부파일 경로');
+            $table->string('image_path')->nullable()->comment('공지 이미지 경로');
             $table->timestamps();
         });
     }
