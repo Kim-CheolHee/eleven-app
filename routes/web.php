@@ -50,9 +50,10 @@ Route::patch('/class/{class_id}/{post_id}', [PostController::class, 'update'])->
 
 // Play 페이지 (심리테스트, MBTI 등)
 Route::get('/play', function () { return Inertia::render('Play');})->name('play');
-Route::get('/memory-game', function () { return Inertia::render('Games/MemoryGame'); })->name('memory_game');
 Route::get('/memory-game', [MemoryGameController::class, 'index'])->name('memory_game');
 Route::post('/memory-game/store', [MemoryGameController::class, 'store'])->name('memory_game.store');
+
+Route::get('/bingo', function () { return Inertia::render('Games/Bingo'); })->name('bingo');
 
 Route::get('/number-guess', function () { return Inertia::render('Games/NumberGuess'); })->name('number_guess');
 Route::get('/mbti-test', function () { return Inertia::render('Tests/MBTITest'); })->name('mbti_test');
