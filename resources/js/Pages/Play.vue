@@ -11,11 +11,12 @@ const mainPageUrl = computed(() => {
 
 // 게임 & 심리테스트 데이터
 const games = [
-    { id: 1, title: "Memory Game", image: "/images/games/memory-game/memory-game.png", route: "memory_game" },
-    { id: 2, title: "Bingo", image: "/images/games/bingo/bingo.jpg", route: "bingo" },
-    // { id: 3, title: "Number Guessing", image: "/images/number-guess.png", route: "number_guess" },
-    // { id: 4, title: "MBTI Test", image: "/images/mbti-test.png", route: "mbti_test" },
-    // { id: 5, title: "Color Matching", image: "/images/color-match.png", route: "color_match" },
+    { id: 1, title: "Memory Game", image: "/images/games/memory-game/memory-game.png", route: "memory_game", isExternal: false },
+    { id: 2, title: "Bingo", image: "/images/games/bingo/bingo.jpg", route: "bingo", isExternal: false },
+    { id: 3, title: "Driving Car", image: "/images/games/driving-car.png", route: "https://slowroads.io/", isExternal: true },
+    { id: 4, title: "Moving Sketch", image: "/images/games/moving-sketch.png", route: "https://sketch.metademolab.com/canvas", isExternal: true },
+    { id: 5, title: "Radio", image: "/images/games/radio.png", route: "https://radio.garden/", isExternal: true },
+    { id: 6, title: "Windy", image: "/images/games/windy.png", route: "https://www.windy.com/", isExternal: true },
 ];
 </script>
 
@@ -48,14 +49,27 @@ const games = [
 
         <!-- 게임 목록 -->
         <div class="relative z-10 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 w-full max-w-4xl">
-            <Link v-for="game in games" :key="game.id" :href="route(game.route)" class="block group">
-                <div class="relative bg-gray-200 rounded-xl shadow-md overflow-hidden transition hover:shadow-lg hover:scale-105">
-                    <img :src="game.image" alt="Game Image" class="w-full h-48 object-cover" />
-                    <div class="absolute inset-0 bg-black/40 flex items-center justify-center opacity-0 group-hover:opacity-100 transition">
-                        <span class="text-white text-xl font-bold">{{ game.title }}</span>
+            <template v-for="game in games" :key="game.id">
+                <!-- 내부 라우트 -->
+                <Link v-if="!game.isExternal" :href="route(game.route)" class="block group">
+                    <div class="relative bg-gray-200 rounded-xl shadow-md overflow-hidden transition hover:shadow-lg hover:scale-105">
+                        <img :src="game.image" alt="Game Image" class="w-full h-48 object-cover" />
+                        <div class="absolute inset-0 bg-black/40 flex items-center justify-center opacity-0 group-hover:opacity-100 transition">
+                            <span class="text-white text-xl font-bold">{{ game.title }}</span>
+                        </div>
                     </div>
-                </div>
-            </Link>
+                </Link>
+
+                <!-- 외부 링크 -->
+                <a v-else :href="game.route" target="_blank" class="block group">
+                    <div class="relative bg-gray-200 rounded-xl shadow-md overflow-hidden transition hover:shadow-lg hover:scale-105">
+                        <img :src="game.image" alt="Game Image" class="w-full h-48 object-cover" />
+                        <div class="absolute inset-0 bg-black/40 flex items-center justify-center opacity-0 group-hover:opacity-100 transition">
+                            <span class="text-white text-xl font-bold">{{ game.title }}</span>
+                        </div>
+                    </div>
+                </a>
+            </template>
         </div>
     </div>
 </template>
