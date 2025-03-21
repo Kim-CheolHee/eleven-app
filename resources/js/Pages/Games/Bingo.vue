@@ -3,22 +3,52 @@ import { ref, computed } from "vue";
 
 // 빙고판 데이터
 const bingoGrid = ref([
-    ["AI", "KOICA", "Cyber Security"],
-    ["Big Data", "Cloud Computing", "IoT"],
-    ["Blockchain", "5G", "E-Government"]
+    ["AI", "KOICA-2", "Cyber Security"],
+    ["Big Data", "KOICA-1", "IoT"],
+    ["Blockchain", "5G", "KOICA-3"]
 ]);
 
 // OX 퀴즈 문제
 const questions = {
-    "AI": { question: "Artificial intelligence is a technology that allows machines to learn.", answer: "O" },
-    "KOICA": { question: "KOICA is an organization that supports private companies.", answer: "X" },
-    "Cyber Security": { question: "Changing passwords periodically helps improve security.", answer: "O" },
-    "Big Data": { question: "The 3Vs of big data are Velocity, Variety, Variable.", answer: "X" },
-    "Cloud Computing": { question: "Cloud services can only be accessed via the internet.", answer: "O" },
-    "IoT": { question: "IoT stands for the Internet of Things.", answer: "O" },
-    "Blockchain": { question: "Blockchain is a technology that makes data easier to modify.", answer: "X" },
-    "5G": { question: "5G is slower than 4G.", answer: "X" },
-    "E-Government": { question: "E-Government is a system that digitizes public administration.", answer: "O" }
+    // KOICA 관련 문제 (3문제)
+    "KOICA-1": {
+        question: "KOICA supports Laos in digital transformation and education.",
+        answer: "O" // 쉬움 ⭐
+    },
+    "KOICA-2": {
+        question: "KOICA provides support only to private companies abroad.",
+        answer: "X" // 중간 ⭐⭐
+    },
+    "KOICA-3": {
+        question: "KOICA does not operate any volunteer programs like World Friends Korea in Laos.",
+        answer: "X" // 어려움 ⭐⭐⭐
+    },
+
+    // 디지털위크 관련 문제 (6문제)
+    "AI": {
+        question: "AI was one of the discussion topics in the Digital Week forum in Laos.",
+        answer: "O" // 쉬움 ⭐
+    },
+    "Cyber Security": {
+        question: "Deepfake scams were not addressed in the Laos Digital Week discussions.",
+        answer: "X" // 중간 ⭐⭐
+    },
+    "Big Data": {
+        question: "Data Science Hackathon was part of the Laos Digital Week.",
+        answer: "O" // 쉬움 ⭐
+    },
+    "IoT": {
+        question: "IoT training was provided to government officials during the event.",
+        answer: "O" // 중간 ⭐⭐
+    },
+    "Blockchain": {
+        question: "The event included seminars on blockchain technology.",
+        answer: "O" // 쉬움 ⭐
+    },
+    "5G": {
+        question: "The main theme of Digital Week was promoting 5G in rural areas.",
+        answer: "X" // 어려움 ⭐⭐⭐
+    }
 };
 
 // 선택된 문제 & 정답 상태 관리
