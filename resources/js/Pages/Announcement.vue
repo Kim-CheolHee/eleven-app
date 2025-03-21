@@ -13,11 +13,12 @@ const form = useForm({
     content: "",
     file: null,
     image: null,
+    is_visible: false,
 });
 
 // 수정 모드 관련 상태값
 const editMode = ref(null); // 현재 수정 중인 공지사항 ID
-const editForm = useForm({ title: "", content: "", file: null });
+const editForm = useForm({ title: "", content: "", file: null, is_visible: false, });
 
 // 선택된 파일명 저장 변수
 const fileInput = ref(null);
@@ -71,6 +72,7 @@ const enableEditMode = (announcement) => {
     editForm.title = announcement.title;
     editForm.content = announcement.content;
     editForm.file = null;
+    editForm.is_visible = !!announcement.is_visible;
 };
 
 // 수정 취소
@@ -157,6 +159,13 @@ const formatContent = (content) => {
                         </p>
                     </div>
 
+                    <div>
+                        <label class="inline-flex items-center space-x-2 text-gray-700 font-semibold">
+                            <input type="checkbox" v-model="form.is_visible" class="form-checkbox h-5 w-5 text-blue-600" />
+                            <span>메인페이지에 노출</span>
+                        </label>
+                    </div>
+
                     <button
                         type="submit"
                         class="bg-blue-500 text-white w-full py-3 rounded-lg text-lg font-semibold hover:bg-blue-600 transition">
@@ -174,6 +183,12 @@ const formatContent = (content) => {
                         class="flex flex-col md:flex-row md:items-center justify-between p-4 border rounded-lg bg-gray-50">
                         <!-- 수정 모드 -->
                         <div v-if="editMode === announcement.id" class="w-full">
+                            <div class="mt-2">
+                                <label class="inline-flex items-center space-x-2 text-gray-700 font-semibold">
+                                    <input type="checkbox" v-model="editForm.is_visible" class="form-checkbox h-5 w-5 text-blue-600" />
+                                    <span>메인페이지에 노출</span>
+                                </label>
+                            </div>
                             <input v-model="editForm.title" class="border border-gray-300 p-2 rounded w-full mb-2" />
                             <textarea v-model="editForm.content" rows="3" class="border border-gray-300 p-2 rounded w-full"></textarea>
 

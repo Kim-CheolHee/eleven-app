@@ -11,7 +11,7 @@ use Inertia\Inertia;
 
 // 홈페이지 라우트
 Route::get('/', function () {
-    $notices = Announcement::latest()->take(5)->get();
+    $notices = Announcement::where('is_visible', true)->latest()->take(5)->get();
 
     return Inertia::render('Welcome', [
         'koica164Time' => Route::has('koica164Time'),

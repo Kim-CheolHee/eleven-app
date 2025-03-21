@@ -31,6 +31,7 @@ class AnnouncementController extends Controller
             'content' => 'required|string',
             'file' => 'nullable|file|max:5120', // 파일 업로드 제한 (최대 5MB)
             'image' => 'nullable|image|max:5120', // 이미지 파일 제한 (최대 5MB)
+            'is_visible' => 'nullable|boolean',
         ]);
 
         $filePath = null;
@@ -54,6 +55,7 @@ class AnnouncementController extends Controller
             'content' => $request->content,
             'file_path' => $filePath,
             'image_path' => $imagePath,
+            'is_visible' => $request->boolean('is_visible'),
         ]);
 
         return redirect()->route('announcement.index');
@@ -67,6 +69,7 @@ class AnnouncementController extends Controller
             'title' => 'required|string|max:255',
             'content' => 'required|string',
             'image' => 'nullable|image|max:5120',
+            'is_visible' => 'nullable|boolean',
         ]);
 
         $imagePath = $announcement->image_path;
@@ -83,7 +86,8 @@ class AnnouncementController extends Controller
         $announcement->update([
             'title' => $request->title,
             'content' => $request->content,
-            'image_path' => $imagePath, // 이미지 업데이트
+            'image_path' => $imagePath,
+            'is_visible' => (bool) $request->input('is_visible'),
         ]);
 
         return redirect()->route('announcement.index');
