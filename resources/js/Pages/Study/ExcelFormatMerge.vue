@@ -1,7 +1,7 @@
 <template>
     <div class="space-y-6 text-[17px] leading-8 text-black">
       <h1 class="text-2xl font-bold text-blue-700">
-        ບົດທີ 6: ຄວາມສາມາດ Merge Cells (셀 병합)
+        ບົດທີ 6: ຄວາມສາມາດ (Merge Cells)
       </h1>
 
       <p>

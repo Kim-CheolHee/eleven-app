@@ -1,5 +1,5 @@
 <script setup>
-import { ref, computed, shallowRef, defineAsyncComponent } from "vue";
+import { ref, computed, shallowRef, defineAsyncComponent, onMounted } from "vue";
 
 // 현재 환경에 따라 메인 페이지 링크 변경
 const mainPageUrl = computed(() => {
@@ -98,12 +98,17 @@ const toggleChapter = (id) => {
         chapter.isOpen = !chapter.isOpen;
     }
 };
+
+// 처음 페이지 로드시 ExcelIntro 불러오기
+onMounted(() => {
+    loadComponent("ExcelIntro");
+});
 </script>
 
 
 <template>
     <div class="min-h-screen bg-gray-100 flex relative">
-        <!-- 📌 학습 목차 사이드바 -->
+        <!-- 학습 목차 사이드바 -->
         <aside
             v-if="isAsideOpen"
             class="w-1/4 bg-white shadow-lg p-6 flex flex-col space-y-4 relative transition-all duration-300"
@@ -157,7 +162,7 @@ const toggleChapter = (id) => {
             </ul>
         </aside>
 
-        <!-- 📌 사이드바 토글 버튼 -->
+        <!-- 사이드바 토글 버튼 -->
         <button
             @click="toggleAside"
             class="fixed top-1/2 left-0 transform -translate-y-1/2 bg-gray-500 text-white p-2 rounded-r-lg shadow-md z-50 transition-all duration-300"
@@ -166,7 +171,7 @@ const toggleChapter = (id) => {
             {{ isAsideOpen ? '◀' : '▶' }}
         </button>
 
-        <!-- 📚 학습 콘텐츠 -->
+        <!-- 학습 콘텐츠 -->
         <main class="transition-all duration-300" :class="isAsideOpen ? 'w-3/4 p-10' : 'w-full p-10'">
             <component :is="selectedComponent" />
         </main>

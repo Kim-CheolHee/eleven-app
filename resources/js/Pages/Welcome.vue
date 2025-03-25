@@ -28,11 +28,11 @@ defineProps({
     <Head title="Welcome" />
 
     <div class="relative min-h-screen bg-cover bg-center" style="background-image: url('/images/thedsaban.jpg');">
-        <!-- 🔹 반투명 오버레이 -->
+        <!-- 반투명 오버레이 -->
         <div class="absolute inset-0 bg-black/50"></div>
 
         <div class="relative z-10 flex flex-col items-center min-h-screen text-white">
-            <!-- 🔹 헤더 -->
+            <!-- 헤더 -->
             <header class="w-full max-w-7xl px-6 py-5 flex justify-between items-center">
                 <h1 class="text-3xl font-bold drop-shadow-lg">📚 ຫ້ອງຮຽນຂອງ ຊອນ</h1>
 
@@ -46,9 +46,9 @@ defineProps({
                 </nav>
             </header>
 
-            <!-- 🔹 메인 콘텐츠 -->
+            <!-- 메인 콘텐츠 -->
             <main class="flex flex-col items-center justify-center w-full max-w-5xl p-6">
-                <!-- 🔹 페이지 이동 버튼 -->
+                <!-- 페이지 이동 버튼 -->
                 <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-6 gap-4 text-center">
                     <Link :href="route('play')" class="px-5 py-3 bg-blue-600 hover:bg-blue-700 rounded-lg text-white text-lg">
                         Game 🎮
@@ -67,7 +67,7 @@ defineProps({
                     <h2 class="text-2xl font-semibold text-center text-black mb-4">📢 ປະກາດ (Announcements)</h2>
 
                     <div class="grid grid-cols-2 gap-4">
-                        <!-- 🔹 공지사항 목록 (왼쪽) -->
+                        <!-- 공지사항 목록 (왼쪽) -->
                         <div class="col-span-1">
                             <ul class="space-y-2">
                                 <li v-for="notice in notices" :key="notice.id">
@@ -84,7 +84,7 @@ defineProps({
                             </ul>
                         </div>
 
-                        <!-- 🔹 공지사항 이미지 출력 (오른쪽) -->
+                        <!-- 공지사항 이미지 출력 (오른쪽) -->
                         <div class="col-span-1 bg-gray-200 rounded-lg flex flex-col items-center">
                             <div v-if="notices && notices.length" class="w-full space-y-2">
                                 <template v-for="(notice, index) in notices" :key="index">
@@ -100,7 +100,7 @@ defineProps({
                 </div>
             </main>
 
-            <!-- 🔹 푸터 -->
+            <!-- 푸터 -->
             <footer class="py-4 mt-auto text-center text-sm text-white/70">
                 Laravel v{{ laravelVersion }} (PHP v{{ phpVersion }})
             </footer>
