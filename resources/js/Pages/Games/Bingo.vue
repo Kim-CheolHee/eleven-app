@@ -12,41 +12,50 @@ const bingoGrid = ref([
 const questions = {
     // KOICA 관련 문제 (3문제)
     "KOICA-1": {
-        question: "KOICA supports Laos in digital transformation and education.",
+        question_en: "KOICA supports Laos in digital transformation and education.",
+        question_lao: "KOICA ໄດ້ໃຫ້ການສະໜັບສະໜູນ ປະເທດລາວ ໃນການຫັນປ່ຽນເປັນ ດິຈິຕອນ ແລະ ຍົກລະດັບວຽກງານການສຶກສາ.",
         answer: "O" // 쉬움 ⭐
     },
     "KOICA-2": {
-        question: "KOICA provides support only to private companies abroad.",
+        question_en: "KOICA provides support only to private companies abroad.",
+        question_lao: "KOICA ໃຫ້ການສະໜັບສະໜູນສະເພາະ ບໍລິສັດເອກະຊົນໃນຕ່າງປະເທດເທົ່ານັ້ນ.",
         answer: "X" // 중간 ⭐⭐
     },
     "KOICA-3": {
-        question: "KOICA does not operate any volunteer programs like World Friends Korea in Laos.",
+        question_en: "KOICA does not operate any volunteer programs like World Friends Korea in Laos.",
+        question_lao: "KOICA ບໍ່ມີໂຄງການອາສາສະໝັກໃດໆເຊັ່ນ World Friends Korea ຢູ່ລາວ.",
         answer: "X" // 어려움 ⭐⭐⭐
     },
 
     // 디지털위크 관련 문제 (6문제)
     "AI": {
-        question: "AI was one of the discussion topics in the Digital Week forum in Laos.",
+        question_en: "AI was one of the discussion topics in the Digital Week forum in Laos.",
+        question_lao: "AI ແມ່ນໜຶ່ງ ໃນຫົວຂໍ້ ການສົນທະນາ ໃນງານ Digital Week ຢູ່ລາວ.",
         answer: "O" // 쉬움 ⭐
     },
     "Cyber Security": {
-        question: "Deepfake scams were not addressed in the Laos Digital Week discussions.",
+        question_en: "Deepfake scams were not addressed in the Laos Digital Week discussions.",
+        question_lao: "ການປ້ອງກັນການປອມແປງ Deepfake ບໍ່ໄດ້ຖືກຈັດເຂົ້າໃນຫົວຂໍ້ສົນທະນາຂອງ Digital Week ຢູ່ລາວ.",
         answer: "X" // 중간 ⭐⭐
     },
     "Big Data": {
-        question: "Data Science Hackathon was part of the Laos Digital Week.",
+        question_en: "Data Science Hackathon was part of the Laos Digital Week.",
+        question_lao: "ການແຂ່ງຂັນ Data Science Hackathon ແມ່ນສ່ວນໜຶ່ງຂອງງານ Digital Week ທີ່ລາວ.",
         answer: "O" // 쉬움 ⭐
     },
     "IoT": {
-        question: "IoT training was provided to government officials during the event.",
+        question_en: "IoT training was provided to government officials during the event.",
+        question_lao: "ມີການຝຶກອົບຮົມກ່ຽວກັບ IoT ໃຫ້ແກ່ພະນັກງານລັດໃນງານນີ້.",
         answer: "O" // 중간 ⭐⭐
     },
     "Blockchain": {
-        question: "The event included seminars on blockchain technology.",
+        question_en: "The event included seminars on blockchain technology.",
+        question_lao: "ໃນງານນີ້ມີການຈັດສຳມະນາກ່ຽວກັບເຕັກໂນໂລຊີ Blockchain.",
         answer: "O" // 쉬움 ⭐
     },
     "5G": {
-        question: "The main theme of Digital Week was promoting 5G in rural areas.",
+        question_en: "The main theme of Digital Week was promoting 5G in rural areas.",
+        question_lao: "ຫົວຂໍ້ຫຼັກຂອງງານ Digital Week ແມ່ນການສົ່ງເສີມ 5G ໃນເຂດຊົນນະບົດ.",
         answer: "X" // 어려움 ⭐⭐⭐
     }
 };
@@ -121,7 +130,8 @@ const completedBingos = computed(() => {
             <img src="/images/games/bingo/KOICA_Logo.png" alt="KOICA 로고" class="w-40 sm:w-48">
         </div>
 
-        <h1 class="text-xl sm:text-2xl font-bold mb-6 text-center">Digital Bingo Quiz 🎯</h1>
+        <h1 class="text-xl sm:text-2xl font-bold mb-1 text-center">Digital Bingo Quiz 🎯</h1>
+        <h1 class="text-xl sm:text-2xl font-bold mb-6 text-center">ເກມບິງໂກດິຈິຕອລ</h1>
 
         <!-- 빙고판 (간격 없이 3x3 형태 유지) -->
         <div class="grid grid-cols-3 w-fit mx-auto border border-gray-300 mb-6">
@@ -143,7 +153,8 @@ const completedBingos = computed(() => {
         <!-- OX 퀴즈 문제 전체 화면 팝업 -->
         <div v-if="selectedTopic" class="fixed inset-0 bg-black bg-opacity-75 flex items-center justify-center z-50 p-4">
             <div class="bg-white p-4 sm:p-6 rounded-lg shadow-lg max-w-sm sm:max-w-lg text-center">
-                <h2 class="text-base sm:text-lg font-bold mb-4">{{ questions[selectedTopic].question }}</h2>
+                <h2 class="text-base sm:text-lg font-bold mb-4">{{ questions[selectedTopic].question_en }}</h2>
+                <h2 class="text-base sm:text-lg font-bold mb-4">{{ questions[selectedTopic].question_lao }}</h2>
                 <div class="flex gap-4 justify-center">
                     <button @click="checkAnswer('O')" class="px-6 sm:px-8 py-3 bg-green-500 text-white rounded-lg text-lg sm:text-xl">
                         O
