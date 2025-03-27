@@ -147,7 +147,7 @@ const completedBingos = computed(() => {
 
         <!-- 빙고 완성 개수 표시 -->
         <div class="mt-4 text-base sm:text-lg font-bold text-center" v-if="completedBingos > 0">
-            🎉 Completed Bingos: {{ completedBingos }} 🎉
+            🎉 Completed Bingos(ຈຳນວນບິງໂກທີ່ສຳເລັດ): {{ completedBingos }} 🎉
         </div>
 
         <!-- OX 퀴즈 문제 전체 화면 팝업 -->
