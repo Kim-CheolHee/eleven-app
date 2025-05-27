@@ -19,6 +19,7 @@ onMounted(async () => {
       level: safetyData.travel_alert || '정보 없음',
       incident: safetyData.event || '정보 없음',
       danger: '추가 예정',
+      summary: safetyData.summary || '요약 정보 없음',
     }
   } catch (err) {
     console.error('국가 코드 조회 실패:', err)
@@ -27,6 +28,7 @@ onMounted(async () => {
       level: '-',
       incident: '-',
       danger: '-',
+      summary: '-',
     }
   }
 })
@@ -42,6 +44,11 @@ onMounted(async () => {
       <p class="text-lg"><strong>여행경보:</strong> {{ countryInfo?.level }}</p>
       <p class="text-lg"><strong>사건사고:</strong> {{ countryInfo?.incident }}</p>
       <p class="text-lg"><strong>주의사항:</strong> {{ countryInfo?.danger }}</p>
+    </div>
+
+    <div class="bg-blue-50 dark:bg-blue-900 text-blue-800 dark:text-blue-100 p-4 rounded-lg mb-4">
+      <strong>📌 안전 요약 카드:</strong>
+      <p class="mt-2 text-base">{{ countryInfo?.summary }}</p>
     </div>
 
     <div class="text-gray-600 text-sm text-center">

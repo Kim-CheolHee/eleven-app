@@ -35,4 +35,12 @@ return [
         ],
     ],
 
+    'safe_koica' => [
+        'key' => env('SAFEKOICA_API_KEY'),
+    ],
+
+    'openai' => [
+        'key' => env('OPENAI_API_KEY'),
+    ],
+
 ];
