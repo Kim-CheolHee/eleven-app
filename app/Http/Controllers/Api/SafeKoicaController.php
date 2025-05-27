@@ -34,6 +34,11 @@ class SafeKoicaController extends Controller
             'cond[country_iso_alp2::EQ]' => $countryCode,
             'returnType' => 'JSON',
         ]);
+        $alarmRaw = $alarmRes->body();
+        Log::info('alarmRes RAW BODY', ['body' => $alarmRaw]);
+
+        $alarmParsed = $alarmRes->json();
+        Log::info('alarmRes JSON Parsed', $alarmParsed);
         Log::info('alarmRes API 응답', $alarmRes->json() ?? []);
 
         // 파싱 데이터 초기화
@@ -62,6 +67,11 @@ class SafeKoicaController extends Controller
             }
         }
 
+        Log::info('최종 리턴될 JSON', [
+            'country' => $firstEvent['country_nm'] ?? '알 수 없음',
+            'travel_alert' => $alarm,
+            'event' => $event,
+        ]);
         return response()->json([
             'country' => $firstEvent['country_nm'] ?? '알 수 없음',
             'travel_alert' => $alarm,
