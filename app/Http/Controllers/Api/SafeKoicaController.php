@@ -11,6 +11,7 @@ class SafeKoicaController extends Controller
     public function getCountrySafety($iso)
     {
         $serviceKey = env('SAFEKOICA_API_KEY');
+        Log::info('사용중인 서비스키', ['key' => env('SAFEKOICA_API_KEY')]);
         $countryCode = strtoupper($iso);
         Log::info('접속국가:', ['code' => $countryCode]);
 
