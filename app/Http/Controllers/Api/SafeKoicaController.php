@@ -12,7 +12,7 @@ class SafeKoicaController extends Controller
     {
         $serviceKey = env('SAFEKOICA_API_KEY');
         $countryCode = strtoupper($iso);
-        Log::info('접속국가: ', $countryCode ?? []);
+        Log::info('접속국가:', ['code' => $countryCode]);
 
         // 1️. 한국국제협력단_파견국 안전이슈 월력표
         $calendarUrl = "http://apis.data.go.kr/B260003/RiskCalendarService2/getRiskCalendarList2";
