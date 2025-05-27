@@ -93,4 +93,9 @@ Route::get('/privacy-eu', function () { return Inertia::render('Privacy/PrivacyE
 Route::get('/privacy-us', function () { return Inertia::render('Privacy/PrivacyUS'); })->name('privacy.us');
 Route::get('/privacy-kr', function () { return Inertia::render('Privacy/PrivacyKR'); })->name('privacy.kr');
 
+// Safe KOICA 페이지 라우트 추가
+Route::get('/safe-koica', function () {
+    return Inertia::render('SafeKoica');
+})->name('safe_koica');
+
 require __DIR__.'/auth.php';
