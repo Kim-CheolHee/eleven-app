@@ -16,9 +16,9 @@ onMounted(async () => {
 
     countryInfo.value = {
       country: safetyData.country,
-      level: safetyData.travel_alert,
-      incident: '사건사고 정보 준비 중',
-      danger: '추가 데이터 준비 중',
+      level: safetyData.travel_alert || '정보 없음',
+      incident: safetyData.event || '정보 없음',
+      danger: '추가 예정',
     }
   } catch (err) {
     console.error('국가 코드 조회 실패:', err)
