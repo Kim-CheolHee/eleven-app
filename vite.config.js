@@ -48,8 +48,13 @@ export default defineConfig({
             ]
           },
           workbox: {
-            globPatterns: ['**/*.{js,css,html,png,svg,woff2}'],
+            globPatterns: ['**/*.{js,css,html,png,svg,woff2,json,webmanifest}'],
             navigateFallback: '/safe-koica/',
+            navigateFallbackDenylist: [
+              /^\/api\//,
+              /^\/images\//,
+              /^\/build\//,
+            ],
             runtimeCaching: [
               {
                 urlPattern: /^https:\/\/ipapi\.co\/.*/,
