@@ -94,8 +94,11 @@ Route::get('/privacy-us', function () { return Inertia::render('Privacy/PrivacyU
 Route::get('/privacy-kr', function () { return Inertia::render('Privacy/PrivacyKR'); })->name('privacy.kr');
 
 // Safe KOICA 페이지 라우트 추가
-Route::get('/safe-koica', function () {
+/* Route::get('/safe-koica', function () {
     return Inertia::render('SafeKoica');
-})->name('safe_koica');
+})->name('safe_koica'); */
+Route::get('/safe-koica', function () {
+    return view('pwa'); // 위의 blade 파일
+});
 
 require __DIR__.'/auth.php';

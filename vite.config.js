@@ -13,12 +13,12 @@ export default defineConfig({
       outDir: 'public/build', // Laravel과 일치시킴
       manifest: true,
       rollupOptions: {
-      output: {
-        entryFileNames: 'assets/[name]-[hash].js',
-        chunkFileNames: 'assets/[name]-[hash].js',
-        assetFileNames: 'assets/[name]-[hash][extname]',
+        output: {
+          entryFileNames: 'assets/[name]-[hash].js',
+          chunkFileNames: 'assets/[name]-[hash].js',
+          assetFileNames: 'assets/[name]-[hash][extname]',
+        },
       },
-  },
     },
     plugins: [
         laravel({
@@ -61,11 +61,12 @@ export default defineConfig({
           workbox: {
             globDirectory: 'public',
             globPatterns: [
-              'build/**/*.js',
-              'build/**/*.css',
-              'images/**/*.{png,svg,ico}',
+              'build/assets/*.js',
+              'build/assets/*.css',
+              'build/.vite/manifest.json',
+              'index.html'
             ],
-            navigateFallback: '/safe-koica/',
+            navigateFallback: '/safe-koica',
             navigateFallbackDenylist: [/^\/api/, /^\/images/],
             runtimeCaching: [
               {
