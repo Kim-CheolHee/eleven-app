@@ -34,6 +34,7 @@ onMounted(async () => {
     const safetyRes = await fetch(`/api/safe-koica/${countryCode.value}`)
     const safetyData = await safetyRes.json()
 
+    // 화면 렌더링용 변수에 반영
     countryInfo.value = {
       country: safetyData.country,
       level: safetyData.travel_alert || '정보 없음',
@@ -41,14 +42,23 @@ onMounted(async () => {
       danger: '추가 예정',
       summary: safetyData.summary || '요약 정보 없음',
     }
+
+    // localStorage에 저장
+    localStorage.setItem('safeKoicaCountryInfo', JSON.stringify(countryInfo.value))
   } catch (err) {
     console.error('국가 코드 조회 실패:', err)
-    countryInfo.value = {
-      country: '위치 확인 실패',
-      level: '-',
-      incident: '-',
-      danger: '-',
-      summary: '-',
+    // localStorage에 저장된 데이터 로드
+    const cached = localStorage.getItem('safeKoicaCountryInfo')
+    if (cached) {
+      countryInfo.value = JSON.parse(cached)
+    } else {
+      countryInfo.value = {
+        country: '위치 확인 실패',
+        level: '-',
+        incident: '-',
+        danger: '-',
+        summary: '오프라인 - 저장된 정보 없음',
+      }
     }
   }
 })
