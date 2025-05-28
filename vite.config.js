@@ -1,6 +1,7 @@
 import { defineConfig } from 'vite';
 import laravel from 'laravel-vite-plugin';
 import vue from '@vitejs/plugin-vue';
+import { VitePWA } from 'vite-plugin-pwa'
 
 export default defineConfig({
     server: {
@@ -21,5 +22,56 @@ export default defineConfig({
                 },
             },
         }),
+        VitePWA({
+          registerType: 'autoUpdate',
+          includeAssets: ['favicon.svg', 'robots.txt'],
+          manifest: {
+            name: 'Safe KOICA',
+            short_name: 'SafeKOICA',
+            description: 'KOICA 단원을 위한 오프라인 안전정보 제공 앱',
+            theme_color: '#ffffff',
+            background_color: '#ffffff',
+            display: 'standalone',
+            icons: [
+              {
+                src: '/icons/icon-192x192.png',
+                sizes: '192x192',
+                type: 'image/png',
+              },
+              {
+                src: '/icons/icon-512x512.png',
+                sizes: '512x512',
+                type: 'image/png',
+              }
+            ]
+          },
+          workbox: {
+            globPatterns: ['**/*.{js,css,html,png,svg,woff2}'],
+            runtimeCaching: [
+              {
+                urlPattern: /^https:\/\/ipapi\.co\/.*/,
+                handler: 'NetworkFirst',
+                options: {
+                  cacheName: 'ipapi-cache',
+                  expiration: {
+                    maxEntries: 10,
+                    maxAgeSeconds: 3600,
+                  }
+                }
+              },
+              {
+                urlPattern: /^https:\/\/mica92\.com\/api\/safe-koica\/.*/,
+                handler: 'NetworkFirst',
+                options: {
+                  cacheName: 'api-cache',
+                  expiration: {
+                    maxEntries: 10,
+                    maxAgeSeconds: 3600,
+                  }
+                }
+              }
+            ]
+          }
+        })
     ],
 });
