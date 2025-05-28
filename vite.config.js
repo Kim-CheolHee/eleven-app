@@ -70,7 +70,16 @@ export default defineConfig({
                   expiration: {
                     maxEntries: 10,
                     maxAgeSeconds: 3600,
-                  }
+                  },
+                  networkTimeoutSeconds: 3,
+                  plugins: [
+                    {
+                      cacheWillUpdate: async ({ response }) => {
+                        // 유효한 응답만 캐시에 저장
+                        return response && response.status === 200 ? response : null
+                      }
+                    }
+                  ]
                 }
               }
             ]
