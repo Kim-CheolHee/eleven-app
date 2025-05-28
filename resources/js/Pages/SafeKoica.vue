@@ -1,11 +1,31 @@
-<script setup>;
+<script setup>
 import { onMounted, ref } from 'vue'
 import { Head } from '@inertiajs/vue3'
 
 const countryInfo = ref(null)
 const countryCode = ref(null)
 
+// ❗️추가: 설치 관련 변수
+const showInstallButton = ref(false)
+let deferredPrompt = null
+
 onMounted(async () => {
+  // ✅ PWA service worker 등록
+  if ('serviceWorker' in navigator) {
+    const swScript = document.createElement('script')
+    swScript.setAttribute('type', 'module')
+    swScript.setAttribute('src', '/build/registerSW.js')
+    document.head.appendChild(swScript)
+  }
+
+  // ✅ 설치 이벤트 대기
+  window.addEventListener('beforeinstallprompt', (e) => {
+    e.preventDefault()
+    deferredPrompt = e
+    showInstallButton.value = true
+  })
+
+  // ✅ 국가 정보 로딩
   try {
     const res = await fetch('https://ipapi.co/json/')
     const data = await res.json()
@@ -32,15 +52,26 @@ onMounted(async () => {
     }
   }
 })
+
+// ✅ 설치 버튼 클릭 처리
+const handleInstallClick = async () => {
+  if (deferredPrompt) {
+    deferredPrompt.prompt()
+    const result = await deferredPrompt.userChoice
+    console.log('설치 결과:', result.outcome)
+    deferredPrompt = null
+    showInstallButton.value = false
+  }
+}
 </script>
 
 <template>
-    <Head>
-      <title>Safe KOICA</title>
-      <link rel="manifest" href="/build/manifest.webmanifest">
-      <meta name="theme-color" content="#ffffff">
-      <script type="module" src="/build/registerSW.js"></script>
-    </Head>
+  <Head>
+    <title>Safe KOICA</title>
+    <link rel="manifest" href="/build/manifest.webmanifest" />
+    <meta name="theme-color" content="#ffffff" />
+  </Head>
+
   <div class="min-h-screen bg-white dark:bg-gray-900 p-6">
     <h1 class="text-3xl font-bold mb-4 text-center text-blue-700">🛡️ Safe KOICA</h1>
 
@@ -58,6 +89,13 @@ onMounted(async () => {
 
     <div class="text-gray-600 text-sm text-center">
       ※ 정보는 실시간 공공데이터를 기반으로 요약 제공됩니다.
+    </div>
+
+    <div v-if="showInstallButton" class="text-center mt-6">
+      <button @click="handleInstallClick"
+              class="bg-blue-600 text-white font-semibold px-4 py-2 rounded-xl shadow hover:bg-blue-700 transition">
+        📲 앱 설치하기
+      </button>
     </div>
   </div>
 </template>
