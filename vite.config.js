@@ -27,8 +27,8 @@ export default defineConfig({
           includeAssets: ['favicon.svg', 'robots.txt'],
           manifest: {
             name: 'Safe KOICA',
-            short_name: '/',
-            start_url: '/',
+            short_name: '/safe-koica/',
+            start_url: '/safe-koica/',
             scope: '/safe-koica/',
             description: 'KOICA 단원을 위한 오프라인 안전정보 제공 앱',
             theme_color: '#ffffff',
@@ -49,6 +49,7 @@ export default defineConfig({
           },
           workbox: {
             globPatterns: ['**/*.{js,css,html,png,svg,woff2}'],
+            navigateFallback: '/index.html',
             runtimeCaching: [
               {
                 urlPattern: /^https:\/\/ipapi\.co\/.*/,

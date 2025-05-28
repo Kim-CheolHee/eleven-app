@@ -5,12 +5,12 @@ import { Head } from '@inertiajs/vue3'
 const countryInfo = ref(null)
 const countryCode = ref(null)
 
-// ❗️추가: 설치 관련 변수
+// 추가: 설치 관련 변수
 const showInstallButton = ref(false)
 let deferredPrompt = null
 
 onMounted(async () => {
-  // ✅ PWA service worker 등록
+  // PWA service worker 등록
   if ('serviceWorker' in navigator) {
     const swScript = document.createElement('script')
     swScript.setAttribute('type', 'module')
@@ -18,14 +18,14 @@ onMounted(async () => {
     document.head.appendChild(swScript)
   }
 
-  // ✅ 설치 이벤트 대기
+  // 설치 이벤트 대기
   window.addEventListener('beforeinstallprompt', (e) => {
     e.preventDefault()
     deferredPrompt = e
     showInstallButton.value = true
   })
 
-  // ✅ 국가 정보 로딩
+  // 국가 정보 로딩
   try {
     const res = await fetch('https://ipapi.co/json/')
     const data = await res.json()
@@ -53,7 +53,7 @@ onMounted(async () => {
   }
 })
 
-// ✅ 설치 버튼 클릭 처리
+// 설치 버튼 클릭 처리
 const handleInstallClick = async () => {
   if (deferredPrompt) {
     deferredPrompt.prompt()
