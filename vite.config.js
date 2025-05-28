@@ -56,8 +56,6 @@ export default defineConfig({
             globPatterns: [
               'build/**/*.js',
               'build/**/*.css',
-              'build/**/*.html',
-              'build/**/*.json',
               'images/**/*.{png,svg,ico}',
             ],
             navigateFallback: '/safe-koica/',
