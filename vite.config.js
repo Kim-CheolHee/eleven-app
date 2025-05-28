@@ -9,6 +9,10 @@ export default defineConfig({
         '/api': 'http://localhost:8000'
         },
     },
+    build: {
+      outDir: 'public/build', // Laravel과 일치시킴
+      manifest: true,
+    },
     plugins: [
         laravel({
             input: 'resources/js/app.js',
@@ -48,13 +52,16 @@ export default defineConfig({
             ]
           },
           workbox: {
-            globPatterns: ['**/*.{js,css,html,png,svg,woff2,json,webmanifest}'],
-            navigateFallback: '/safe-koica/',
-            navigateFallbackDenylist: [
-              /^\/api\//,
-              /^\/images\//,
-              /^\/build\//,
+            globDirectory: 'public',
+            globPatterns: [
+              'build/**/*.js',
+              'build/**/*.css',
+              'build/**/*.html',
+              'build/**/*.json',
+              'images/**/*.{png,svg,ico}',
             ],
+            navigateFallback: '/safe-koica/',
+            navigateFallbackDenylist: [/^\/api/, /^\/images/],
             runtimeCaching: [
               {
                 urlPattern: /^https:\/\/ipapi\.co\/.*/,
