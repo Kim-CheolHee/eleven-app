@@ -1,4 +1,4 @@
-<script setup>
+<script setup>;
 import { onMounted, ref } from 'vue'
 import { Head } from '@inertiajs/vue3'
 
@@ -35,7 +35,12 @@ onMounted(async () => {
 </script>
 
 <template>
-  <Head title="Safe KOICA" />
+    <Head>
+      <title>Safe KOICA</title>
+      <link rel="manifest" href="/build/manifest.webmanifest">
+      <meta name="theme-color" content="#ffffff">
+      <script type="module" src="/build/registerSW.js"></script>
+    </Head>
   <div class="min-h-screen bg-white dark:bg-gray-900 p-6">
     <h1 class="text-3xl font-bold mb-4 text-center text-blue-700">🛡️ Safe KOICA</h1>
 
