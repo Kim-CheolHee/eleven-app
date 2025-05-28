@@ -10,7 +10,7 @@ const showInstallButton = ref(false)
 let deferredPrompt = null
 
 onMounted(async () => {
-  // PWA service worker 등록
+  // Service Worker 등록
   if ('serviceWorker' in navigator) {
     const swScript = document.createElement('script')
     swScript.setAttribute('type', 'module')
@@ -18,52 +18,57 @@ onMounted(async () => {
     document.head.appendChild(swScript)
   }
 
-  // 설치 이벤트 대기
+  // 설치 이벤트 감지
   window.addEventListener('beforeinstallprompt', (e) => {
     e.preventDefault()
     deferredPrompt = e
     showInstallButton.value = true
   })
 
-  // 국가 정보 로딩
+  // 국가 코드 확인
   try {
     const res = await fetch('https://ipapi.co/json/')
+    if (!res.ok) throw new Error(`ipapi.co 오류: ${res.status}`)
     const data = await res.json()
-    countryCode.value = data.country
+    countryCode.value = data.country || 'LA'
+  } catch (err) {
+    console.error('국가 코드 조회 실패:', err)
+    countryCode.value = 'LA' // 기본값
+  }
 
+  // 안전 정보 불러오기
+  try {
     const safetyRes = await fetch(`/api/safe-koica/${countryCode.value}`)
+    if (!safetyRes.ok) throw new Error(`API 응답 오류: ${safetyRes.status}`)
     const safetyData = await safetyRes.json()
 
-    // 화면 렌더링용 변수에 반영
     countryInfo.value = {
-      country: safetyData.country,
+      country: safetyData.country || '국가명 없음',
       level: safetyData.travel_alert || '정보 없음',
       incident: safetyData.event || '정보 없음',
       danger: '추가 예정',
       summary: safetyData.summary || '요약 정보 없음',
     }
 
-    // localStorage에 저장
     localStorage.setItem('safeKoicaCountryInfo', JSON.stringify(countryInfo.value))
   } catch (err) {
-    console.error('국가 코드 조회 실패:', err)
-    // localStorage에 저장된 데이터 로드
+    console.error('안전정보 불러오기 실패:', err)
+
     const cached = localStorage.getItem('safeKoicaCountryInfo')
-    if (cached) {
-      countryInfo.value = JSON.parse(cached)
-    } else {
-      countryInfo.value = {
-        country: '위치 확인 실패',
-        level: '-',
-        incident: '-',
-        danger: '-',
-        summary: '오프라인 - 저장된 정보 없음',
+    if (cached && cached !== 'undefined' && cached !== 'null') {
+      try {
+        countryInfo.value = JSON.parse(cached)
+      } catch (parseErr) {
+        console.error('로컬 캐시 파싱 실패:', parseErr)
+        countryInfo.value = offlineFallback()
       }
+    } else {
+      countryInfo.value = offlineFallback()
     }
   }
 })
 
-// 설치 버튼 클릭 처리
+// 설치 처리
 const handleInstallClick = async () => {
   if (deferredPrompt) {
     deferredPrompt.prompt()
@@ -72,13 +77,10 @@ const handleInstallClick = async () => {
     deferredPrompt = null
     showInstallButton.value = false
 
-    // 설치 성공한 경우에만 로그 전송
     if (result.outcome === 'accepted') {
       await fetch('/api/safe-koica/install-log', {
         method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
+        headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
           event: 'install',
           time: new Date().toISOString(),
@@ -87,6 +89,15 @@ const handleInstallClick = async () => {
     }
   }
 }
+
+// 오프라인 대체 정보
+const offlineFallback = () => ({
+  country: '위치 확인 실패',
+  level: '-',
+  incident: '-',
+  danger: '-',
+  summary: '오프라인 - 저장된 정보 없음',
+})
 </script>
 
 <template>
