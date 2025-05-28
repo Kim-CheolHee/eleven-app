@@ -61,6 +61,20 @@ const handleInstallClick = async () => {
     console.log('설치 결과:', result.outcome)
     deferredPrompt = null
     showInstallButton.value = false
+
+    // 설치 성공한 경우에만 로그 전송
+    if (result.outcome === 'accepted') {
+      await fetch('/api/safe-koica/install-log', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          event: 'install',
+          time: new Date().toISOString(),
+        })
+      })
+    }
   }
 }
 </script>
