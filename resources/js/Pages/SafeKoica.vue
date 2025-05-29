@@ -12,6 +12,11 @@ const countryInfo = ref({
 })
 const countryCode = ref(null)
 
+// 대화 관련 상태
+const userInput = ref('')
+const isLoading = ref(false)
+const chatResponse = ref('')
+
 // 앱 설치 관련
 const showInstallButton = ref(false)
 let deferredPrompt = null
@@ -75,6 +80,33 @@ onMounted(async () => {
   }
 })
 
+// GPT 질문 함수
+const askGPT = async () => {
+  if (!userInput.value.trim()) return
+
+  isLoading.value = true
+  chatResponse.value = ''
+
+  try {
+    const res = await fetch('/api/safe-koica/ask', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({ message: userInput.value }),
+    })
+
+    if (!res.ok) throw new Error(`GPT 요청 실패: ${res.status}`)
+    const data = await res.json()
+    chatResponse.value = data.reply || '응답이 없습니다.'
+  } catch (e) {
+    console.error('askGPT 오류:', e)
+    chatResponse.value = 'GPT 응답을 불러오는 데 실패했습니다.'
+  } finally {
+    isLoading.value = false
+  }
+}
+
 // 설치 버튼 핸들러
 const handleInstallClick = async () => {
   if (deferredPrompt) {
@@ -124,10 +156,33 @@ const handleInstallClick = async () => {
       <p class="mt-2 text-base">{{ countryInfo?.summary }}</p>
     </div>
 
+    <!-- GPT 대화 영역 -->
+    <div class="bg-white dark:bg-gray-800 p-4 rounded-xl shadow mb-4">
+      <label for="userInput" class="block text-sm font-medium mb-2 text-gray-700 dark:text-gray-200">
+        🧠 AI 안전비서에게 질문하기
+      </label>
+      <div class="flex gap-2">
+        <input
+          v-model="userInput"
+          id="userInput"
+          type="text"
+          class="flex-1 rounded-lg border px-4 py-2 text-sm shadow-sm focus:outline-none"
+          placeholder="예: 라오스에서 주의할 점은?"
+        />
+        <button
+          @click="askGPT"
+          class="bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 transition"
+        >전송</button>
+      </div>
+      <p v-if="isLoading" class="mt-2 text-sm text-gray-500">답변을 불러오는 중입니다...</p>
+      <p v-if="chatResponse" class="mt-4 text-base text-gray-800 dark:text-gray-100 whitespace-pre-line">
+        {{ chatResponse }}
+      </p>
+    </div>
+
     <div class="text-gray-600 text-sm text-center">
       ※ 정보는 실시간 공공데이터를 기반으로 요약 제공됩니다.
     </div>
-
 
     <div v-if="showInstallButton" class="text-center mt-6">
       <button @click="handleInstallClick"

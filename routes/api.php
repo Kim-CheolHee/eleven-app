@@ -17,3 +17,6 @@ Route::post('/safe-koica/install-log', function (Request $request) {
 
     return response()->json(['status' => 'ok']);
 });
+
+Route::post('/safe-koica/ask', [SafeKoicaController::class, 'askGPT']);
+
