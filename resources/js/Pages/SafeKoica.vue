@@ -84,6 +84,15 @@ onMounted(async () => {
 const askGPT = async () => {
   if (!userInput.value.trim()) return
 
+  // 쿨타임 제한 (20초)
+  const lastAskTime = localStorage.getItem('lastAskTime')
+  const now = Date.now()
+
+  if (lastAskTime && now - parseInt(lastAskTime) < 20 * 1000) {
+    chatResponse.value = '⏱ 너무 자주 질문하고 있어요. 20초 후 다시 시도해주세요.'
+    return
+  }
+
   isLoading.value = true
   chatResponse.value = ''
 
@@ -96,9 +105,18 @@ const askGPT = async () => {
       body: JSON.stringify({ message: userInput.value }),
     })
 
+    // 429 에러 제한 감지
+    if (res.status === 429) {
+      chatResponse.value = '⚠️ 너무 자주 질문했어요. 잠시 후 다시 시도해주세요.'
+      return
+    }
+
     if (!res.ok) throw new Error(`GPT 요청 실패: ${res.status}`)
     const data = await res.json()
     chatResponse.value = data.reply || '응답이 없습니다.'
+
+    // 마지막 질문 시간 저장
+    localStorage.setItem('lastAskTime', Date.now().toString())
   } catch (e) {
     console.error('askGPT 오류:', e)
     chatResponse.value = 'GPT 응답을 불러오는 데 실패했습니다.'

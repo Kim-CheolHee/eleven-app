@@ -96,6 +96,14 @@ class SafeKoicaController extends Controller
         try {
             $reply = SafeKoicaAIService::ask($message);
 
+            // 로깅 추가
+            Log::info('GPT 질문 요청', [
+                'ip' => $request->ip(),
+                'agent' => $request->userAgent(),
+                'message' => $message,
+                'reply_snippet' => mb_substr($reply, 0, 100), // 응답 일부만 로깅
+            ]);
+
             return response()->json(['reply' => $reply]);
         } catch (Throwable $e) {
             Log::error('SafeKoicaController@askGPT 에러', [
