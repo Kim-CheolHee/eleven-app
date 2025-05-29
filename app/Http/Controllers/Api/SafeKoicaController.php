@@ -7,6 +7,7 @@ use App\Http\Controllers\Controller;
 use App\Services\SafeKoicaAIService;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Cache;
 use Throwable;
 
 class SafeKoicaController extends Controller
@@ -56,13 +57,16 @@ class SafeKoicaController extends Controller
                 }
             }
 
-            // AI 요약 카드 생성
-            $summary = SafeKoicaAIService::summarize([
-                'country' => $countryName,
-                'event' => $event,
-                'alert' => $alarmLevel,
-                'danger' => $dangerZone ?? '정보 없음',
-            ]);
+            // ai 요약 호출 캐시 처리 (10분)
+            $cacheKey = 'summary_' . $countryCode;
+            $summary = Cache::remember($cacheKey, 600, function () use ($countryName, $event, $alarmLevel, $dangerZone) {
+                return SafeKoicaAIService::summarize([
+                    'country' => $countryName,
+                    'event' => $event,
+                    'alert' => $alarmLevel,
+                    'danger' => $dangerZone ?? '정보 없음',
+                ]);
+            });
 
             return response()->json([
                 'country' => $countryName,
