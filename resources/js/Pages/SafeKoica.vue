@@ -2,7 +2,14 @@
 import { onMounted, ref } from 'vue'
 import { Head } from '@inertiajs/vue3'
 
-const countryInfo = ref(null)
+const countryInfo = ref({
+  country: '로딩 중...',
+  level: '조회 중...',
+  incident: '조회 중...',
+  danger: '조회 중...',
+  summary: '초기 정보를 불러오는 중입니다...',
+  updated_at: '-',
+})
 const countryCode = ref(null)
 
 // 앱 설치 관련
@@ -10,7 +17,17 @@ const showInstallButton = ref(false)
 let deferredPrompt = null
 
 onMounted(async () => {
-  // Service Worker 등록 (알림, 캐시 기능 제거와는 무관 — 설치용만 사용)
+  // 로컬 캐시 먼저 불러오기
+  const cached = localStorage.getItem('safeKoicaCountryInfo')
+  if (cached && cached !== 'undefined' && cached !== 'null') {
+    try {
+      countryInfo.value = JSON.parse(cached)
+    } catch (e) {
+      console.error('로컬 캐시 파싱 실패:', e)
+    }
+  }
+
+  // Service Worker 등록 (설치 버튼용만 유지)
   if ('serviceWorker' in navigator) {
     const swScript = document.createElement('script')
     swScript.setAttribute('type', 'module')
@@ -18,14 +35,14 @@ onMounted(async () => {
     document.head.appendChild(swScript)
   }
 
-  // PWA 설치 이벤트
+  // 설치 이벤트
   window.addEventListener('beforeinstallprompt', (e) => {
     e.preventDefault()
     deferredPrompt = e
     showInstallButton.value = true
   })
 
-  // 사용자 위치 확인 (국가 코드)
+  // IP 기반 국가 코드 조회
   try {
     const res = await fetch('https://ipapi.co/json/')
     if (!res.ok) throw new Error(`ipapi.co 오류: ${res.status}`)
@@ -33,10 +50,10 @@ onMounted(async () => {
     countryCode.value = data.country || 'LA'
   } catch (err) {
     console.error('국가 코드 조회 실패:', err)
-    countryCode.value = 'LA' // 기본값
+    countryCode.value = 'LA'
   }
 
-  // 실시간 안전 정보 불러오기
+  // 실시간 안전 정보 요청 및 캐시 업데이트
   try {
     const safetyRes = await fetch(`/api/safe-koica/${countryCode.value}`)
     if (!safetyRes.ok) throw new Error(`API 응답 오류: ${safetyRes.status}`)
@@ -48,20 +65,17 @@ onMounted(async () => {
       incident: safetyData.event || '정보 없음',
       danger: '추가 예정',
       summary: safetyData.summary || '요약 정보 없음',
+      updated_at: new Date().toLocaleString(),
     }
+
+    // 최신 정보 캐시 저장
+    localStorage.setItem('safeKoicaCountryInfo', JSON.stringify(countryInfo.value))
   } catch (err) {
-    console.error('안전정보 불러오기 실패:', err)
-    countryInfo.value = {
-      country: '정보 불러오기 실패',
-      level: '-',
-      incident: '-',
-      danger: '-',
-      summary: '정보를 가져오는 데 실패했습니다.',
-    }
+    console.error('안전정보 API 호출 실패:', err)
   }
 })
 
-// 앱 설치 클릭 핸들러
+// 설치 버튼 핸들러
 const handleInstallClick = async () => {
   if (deferredPrompt) {
     deferredPrompt.prompt()
@@ -94,6 +108,10 @@ const handleInstallClick = async () => {
   <div class="min-h-screen bg-white dark:bg-gray-900 p-6">
     <h1 class="text-3xl font-bold mb-4 text-center text-blue-700">🛡️ Safe KOICA</h1>
 
+    <div class="text-gray-500 text-xs text-center mt-2">
+      마지막 업데이트: {{ countryInfo?.updated_at }}
+    </div>
+
     <div class="bg-gray-100 dark:bg-gray-800 p-4 rounded-xl shadow mb-4">
       <p class="text-lg"><strong>국가:</strong> {{ countryInfo?.country }}</p>
       <p class="text-lg"><strong>여행경보:</strong> {{ countryInfo?.level }}</p>
@@ -109,6 +127,7 @@ const handleInstallClick = async () => {
     <div class="text-gray-600 text-sm text-center">
       ※ 정보는 실시간 공공데이터를 기반으로 요약 제공됩니다.
     </div>
+
 
     <div v-if="showInstallButton" class="text-center mt-6">
       <button @click="handleInstallClick"
