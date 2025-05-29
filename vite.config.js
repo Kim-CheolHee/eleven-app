@@ -50,7 +50,7 @@ export default defineConfig({
         display: 'standalone',
         background_color: '#ffffff',
         theme_color: '#ffffff',
-        description: 'KOICA 단원을 위한 오프라인 안전정보 제공 앱',
+        description: 'KOICA 단원을 위한 안전정보 제공 앱',
         icons: [
           {
             src: '/images/safe_koica/icon-192x192.png',

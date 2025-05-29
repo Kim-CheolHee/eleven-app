@@ -5,12 +5,12 @@ import { Head } from '@inertiajs/vue3'
 const countryInfo = ref(null)
 const countryCode = ref(null)
 
-// 추가: 설치 관련 변수
+// 앱 설치 관련
 const showInstallButton = ref(false)
 let deferredPrompt = null
 
 onMounted(async () => {
-  // Service Worker 등록
+  // Service Worker 등록 (알림, 캐시 기능 제거와는 무관 — 설치용만 사용)
   if ('serviceWorker' in navigator) {
     const swScript = document.createElement('script')
     swScript.setAttribute('type', 'module')
@@ -18,14 +18,14 @@ onMounted(async () => {
     document.head.appendChild(swScript)
   }
 
-  // 설치 이벤트 감지
+  // PWA 설치 이벤트
   window.addEventListener('beforeinstallprompt', (e) => {
     e.preventDefault()
     deferredPrompt = e
     showInstallButton.value = true
   })
 
-  // 국가 코드 확인
+  // 사용자 위치 확인 (국가 코드)
   try {
     const res = await fetch('https://ipapi.co/json/')
     if (!res.ok) throw new Error(`ipapi.co 오류: ${res.status}`)
@@ -36,7 +36,7 @@ onMounted(async () => {
     countryCode.value = 'LA' // 기본값
   }
 
-  // 안전 정보 불러오기
+  // 실시간 안전 정보 불러오기
   try {
     const safetyRes = await fetch(`/api/safe-koica/${countryCode.value}`)
     if (!safetyRes.ok) throw new Error(`API 응답 오류: ${safetyRes.status}`)
@@ -49,26 +49,19 @@ onMounted(async () => {
       danger: '추가 예정',
       summary: safetyData.summary || '요약 정보 없음',
     }
-
-    localStorage.setItem('safeKoicaCountryInfo', JSON.stringify(countryInfo.value))
   } catch (err) {
     console.error('안전정보 불러오기 실패:', err)
-
-    const cached = localStorage.getItem('safeKoicaCountryInfo')
-    if (cached && cached !== 'undefined' && cached !== 'null') {
-      try {
-        countryInfo.value = JSON.parse(cached)
-      } catch (parseErr) {
-        console.error('로컬 캐시 파싱 실패:', parseErr)
-        countryInfo.value = offlineFallback()
-      }
-    } else {
-      countryInfo.value = offlineFallback()
+    countryInfo.value = {
+      country: '정보 불러오기 실패',
+      level: '-',
+      incident: '-',
+      danger: '-',
+      summary: '정보를 가져오는 데 실패했습니다.',
     }
   }
 })
 
-// 설치 처리
+// 앱 설치 클릭 핸들러
 const handleInstallClick = async () => {
   if (deferredPrompt) {
     deferredPrompt.prompt()
@@ -89,15 +82,6 @@ const handleInstallClick = async () => {
     }
   }
 }
-
-// 오프라인 대체 정보
-const offlineFallback = () => ({
-  country: '위치 확인 실패',
-  level: '-',
-  incident: '-',
-  danger: '-',
-  summary: '오프라인 - 저장된 정보 없음',
-})
 </script>
 
 <template>
