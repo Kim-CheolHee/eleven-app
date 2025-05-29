@@ -57,6 +57,25 @@ class SafeKoicaController extends Controller
                 }
             }
 
+            // 특별여행주의보 API 호출
+            $spWarningRes = Http::get("http://apis.data.go.kr/1262000/SptravelWarningServiceV2/getSptravelWarningListV2", [
+                'ServiceKey' => $serviceKey,
+                'pageNo' => 1,
+                'numOfRows' => 10,
+                'returnType' => 'JSON',
+                'cond[country_iso_alp2::EQ]' => $countryCode,
+            ]);
+
+            $spItems = $spWarningRes->json()['response']['body']['items']['item'] ?? [];
+            $specialWarning = null;
+
+            if (!empty($spItems)) {
+                $writtenDate = $spItems[0]['written_dt'] ?? null;
+                $specialWarning = $writtenDate
+                    ? "특별여행주의보 발령됨 ({$writtenDate})"
+                    : "특별여행주의보 발령됨";
+            }
+
             // ai 요약 호출 캐시 처리 (10분)
             $cacheKey = 'summary_' . $countryCode;
             $summary = Cache::remember($cacheKey, 600, function () use ($countryName, $event, $alarmLevel, $dangerZone) {
@@ -65,6 +84,7 @@ class SafeKoicaController extends Controller
                     'event' => $event,
                     'alert' => $alarmLevel,
                     'danger' => $dangerZone ?? '정보 없음',
+                    'special' => $specialWarning ?? '없음',
                 ]);
             });
 
@@ -73,6 +93,7 @@ class SafeKoicaController extends Controller
                 'travel_alert' => $alarmLevel,
                 'event' => $event,
                 'danger' => $dangerZone ?? '정보 없음',
+                'special_warning' => $specialWarning ?? '없음',
                 'summary' => $summary,
             ]);
         } catch (Throwable $e) {
