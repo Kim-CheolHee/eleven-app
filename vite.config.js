@@ -65,13 +65,13 @@ export default defineConfig({
         ]
       },
       workbox: {
-        globDirectory: 'public',
+        globDirectory: 'public/build',
         globPatterns: [
-          'build/assets/*.js',
-          'build/assets/*.css',
-          'build/.vite/manifest.json',
+          'assets/*.js',
+          'assets/*.css',
+          '.vite/manifest.json',
         ],
-        navigateFallback: '/safe-koica',
+        navigateFallback: 'index.html',
         navigateFallbackDenylist: [/^\/api/, /^\/images/],
         runtimeCaching: [
           {
