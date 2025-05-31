@@ -13,13 +13,15 @@ class SafeKoicaAIService
         try {
             $client = OpenAI::client(config('services.openai.key'));
 
+            $travelAdjustment = $info['travel_adjustment'] ?? '없음';
             $prompt = "국가명: {$info['country']}
                 이벤트: {$info['event']},
                 경보 단계: {$info['alert']},
                 주의 지역: {$info['danger']},
-                특별여행주의보: {$info['special']}
+                특별여행주의보: {$info['special']},
+                여행경보 조정 내용: {$travelAdjustment},
 
-                위 정보를 1~2줄 정도로 요약해서 안내 카드 문장을 생성해줘. 문장은 친절하고 간결하게 작성해.";
+                위 정보를 2~3줄 정도로 요약해서 안내 카드 문장을 생성해줘. 문장은 친절하고 간결하게 작성해.";
 
             $response = $client->chat()->create([
                 'model' => 'gpt-4o',

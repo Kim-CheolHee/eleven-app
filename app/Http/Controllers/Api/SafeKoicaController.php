@@ -9,10 +9,11 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Cache;
 use Throwable;
 
-use App\Services\RiskCalendarService;
-use App\Services\TravelAlertService;
-use App\Services\SpecialWarningService;
-use App\Services\SafeKoicaAIService;
+use App\Services\SafeKoicaAIService; // AI 요약 및 질의응답 API
+use App\Services\RiskCalendarService; // 한국국제협력단_파견국 안전이슈 월력표 API
+use App\Services\TravelAlertService; //  외교부_국가·지역별 여행경보 목록 조회(0404 대륙정보) API
+use App\Services\SpecialWarningService;// 외교부_국가∙지역별 특별여행주의보 API
+use App\Services\TravelAlertAdjustmentService; // 외교부_국가∙지역별 여행경보 조정 API
 
 class SafeKoicaController extends Controller
 {
@@ -37,17 +38,22 @@ class SafeKoicaController extends Controller
             // 외교부_국가∙지역별 특별여행주의보 API
             $specialWarning = SpecialWarningService::get($countryCode);
 
+            // 외교부_국가∙지역별 여행경보 조정 API
+            $travelAdjustment = TravelAlertAdjustmentService::get($countryCode);
+
             // ai 요약 호출 캐시 처리 (10분)
             $cacheKey = 'summary_' . $countryCode;
-            $summary = Cache::remember($cacheKey, 600, function () use ($countryName, $event, $alarmLevel, $dangerZone) {
+            $summary = Cache::remember($cacheKey, 0, function () use ($countryName, $event, $alarmLevel, $dangerZone, $travelAdjustment) {
                 return SafeKoicaAIService::summarize([
                     'country' => $countryName,
                     'event' => $event,
                     'alert' => $alarmLevel,
                     'danger' => $dangerZone ?? '정보 없음',
                     'special' => $specialWarning ?? '없음',
+                    'travel_adjustment' => $travelAdjustment ?? '없음',
                 ]);
             });
+            Log::info('summary', ['summary' => $summary]);
 
             return response()->json([
                 'country' => $countryName,
@@ -55,6 +61,7 @@ class SafeKoicaController extends Controller
                 'event' => $event,
                 'danger' => $dangerZone ?? '정보 없음',
                 'special_warning' => $specialWarning ?? '없음',
+                'travel_adjustment' => $travelAdjustment ?? '없음',
                 'summary' => $summary,
             ]);
         } catch (Throwable $e) {
