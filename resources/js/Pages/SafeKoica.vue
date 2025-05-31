@@ -5,6 +5,7 @@ import { Head } from '@inertiajs/vue3'
 const countryInfo = ref({
   country: '로딩 중...',
   level: '조회 중...',
+  occurDate: '조회 중...',
   incident: '조회 중...',
   danger: '조회 중...',
   summary: '초기 정보를 불러오는 중입니다...',
@@ -68,6 +69,7 @@ onMounted(async () => {
       country: safetyData.country || '국가명 없음',
       level: safetyData.travel_alert || '정보 없음',
       incident: safetyData.event || '정보 없음',
+      occurDate: safetyData.occurDate || '날짜 없음',
       danger: '추가 예정',
       summary: safetyData.summary || '요약 정보 없음',
       updated_at: new Date().toLocaleString(),
@@ -163,10 +165,10 @@ const handleInstallClick = async () => {
     </div>
 
     <div class="bg-gray-100 dark:bg-gray-800 p-4 rounded-xl shadow mb-4">
-      <p class="text-lg"><strong>국가:</strong> {{ countryInfo?.country }}</p>
-      <p class="text-lg"><strong>여행경보:</strong> {{ countryInfo?.level }}</p>
-      <p class="text-lg"><strong>사건사고:</strong> {{ countryInfo?.incident }}</p>
-      <p class="text-lg"><strong>주의사항:</strong> {{ countryInfo?.danger }}</p>
+      <p class="text-lg"><strong>국가:</strong>{{ countryInfo?.country }}</p>
+      <p class="text-lg"><strong>여행경보:</strong>{{ countryInfo?.level }}</p>
+      <p class="text-lg"><strong>사건사고:</strong>{{ countryInfo?.occurDate }} {{ countryInfo?.incident }}</p>
+      <p class="text-lg"><strong>주의사항:</strong>{{ countryInfo?.danger }}</p>
     </div>
 
     <div class="bg-blue-50 dark:bg-blue-900 text-blue-800 dark:text-blue-100 p-4 rounded-lg mb-4">

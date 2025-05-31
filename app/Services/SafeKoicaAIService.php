@@ -16,6 +16,7 @@ class SafeKoicaAIService
             $travelAdjustment = $info['travel_adjustment'] ?? '없음';
             $prompt = "국가명: {$info['country']}
                 이벤트: {$info['event']},
+                이벤트 날짜: {$info['occurDate']}
                 경보 단계: {$info['alert']},
                 주의 지역: {$info['danger']},
                 특별여행주의보: {$info['special']},

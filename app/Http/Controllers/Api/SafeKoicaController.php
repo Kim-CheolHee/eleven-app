@@ -27,10 +27,11 @@ class SafeKoicaController extends Controller
 
             // 한국국제협력단_파견국 안전이슈 월력표 API
             $calendar = RiskCalendarService::get($countryCode);
-            $event = $calendar['event'] ?? '이벤트 정보 없음';
+            $event = $calendar['event'] ?? '정보 없음';
             $countryName = $calendar['country'] ?? '알 수 없음';
+            $occurDate = $calendar['occur_date'] ?? '알 수 없음';
 
-            //  외교부_국가·지역별 여행경보 목록 조회(0404 대륙정보) API
+            // 외교부_국가·지역별 여행경보 목록 조회(0404 대륙정보) API
             $travelAlertData = TravelAlertService::get($countryCode);
             $alarmLevel = $travelAlertData['level'] ?? '정보 없음';
             $dangerZone = $travelAlertData['danger'] ?? '정보 없음';
@@ -44,10 +45,11 @@ class SafeKoicaController extends Controller
             // ai 요약 호출 캐시 처리 (10분)
             $cacheKey = 'summary_' . $countryCode;
             // api 테스트 할 때는 ttl 값을 0으로. 배포시엔 600
-            $summary = Cache::remember($cacheKey, 600, function () use ($countryName, $event, $alarmLevel, $dangerZone, $travelAdjustment) {
+            $summary = Cache::remember($cacheKey, 600, function () use ($countryName, $event, $occurDate, $alarmLevel, $dangerZone, $travelAdjustment) {
                 return SafeKoicaAIService::summarize([
                     'country' => $countryName,
                     'event' => $event,
+                    'occurDate' => $occurDate,
                     'alert' => $alarmLevel,
                     'danger' => $dangerZone ?? '정보 없음',
                     'special' => $specialWarning ?? '없음',
@@ -58,8 +60,9 @@ class SafeKoicaController extends Controller
 
             return response()->json([
                 'country' => $countryName,
-                'travel_alert' => $alarmLevel,
                 'event' => $event,
+                'occurDate' => $occurDate,
+                'travel_alert' => $alarmLevel,
                 'danger' => $dangerZone ?? '정보 없음',
                 'special_warning' => $specialWarning ?? '없음',
                 'travel_adjustment' => $travelAdjustment ?? '없음',
