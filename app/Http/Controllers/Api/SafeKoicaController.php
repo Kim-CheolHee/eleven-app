@@ -43,7 +43,8 @@ class SafeKoicaController extends Controller
 
             // ai 요약 호출 캐시 처리 (10분)
             $cacheKey = 'summary_' . $countryCode;
-            $summary = Cache::remember($cacheKey, 0, function () use ($countryName, $event, $alarmLevel, $dangerZone, $travelAdjustment) {
+            // api 테스트 할 때는 ttl 값을 0으로. 배포시엔 600
+            $summary = Cache::remember($cacheKey, 600, function () use ($countryName, $event, $alarmLevel, $dangerZone, $travelAdjustment) {
                 return SafeKoicaAIService::summarize([
                     'country' => $countryName,
                     'event' => $event,
