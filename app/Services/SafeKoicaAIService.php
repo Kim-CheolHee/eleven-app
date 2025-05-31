@@ -13,12 +13,14 @@ class SafeKoicaAIService
         try {
             $client = OpenAI::client(config('services.openai.key'));
 
+            $alarmLevels = is_array($info['alarmLevels']) ? implode(', ', $info['alarmLevels']) : $info['alarmLevels'];
+            $alarmLevelReason = is_array($info['alarmLevelReason']) ? implode(', ', $info['alarmLevelReason']) : $info['alarmLevelReason'];
             $travelAdjustment = $info['travel_adjustment'] ?? '없음';
             $prompt = "국가명: {$info['country']}
                 이벤트: {$info['event']},
                 이벤트 날짜: {$info['occurDate']}
-                경보 단계: {$info['alert']},
-                주의 지역: {$info['danger']},
+                경보 단계: {$alarmLevels},
+                주의 지역: {$alarmLevelReason},
                 특별여행주의보: {$info['special']},
                 여행경보 조정 내용: {$travelAdjustment},
 

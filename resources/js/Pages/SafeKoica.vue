@@ -7,7 +7,6 @@ const countryInfo = ref({
   level: '조회 중...',
   occurDate: '조회 중...',
   incident: '조회 중...',
-  danger: '조회 중...',
   summary: '초기 정보를 불러오는 중입니다...',
   updated_at: '-',
 })
@@ -21,6 +20,20 @@ const chatResponse = ref('')
 // 앱 설치 관련
 const showInstallButton = ref(false)
 let deferredPrompt = null
+
+// 여행경보 단계 모달
+const showDetail = ref(false)
+const detailText = ref('')
+const openDetail = (idx) => {
+  if (Array.isArray(countryInfo.value.alarmLevelReason)) {
+    detailText.value = countryInfo.value.alarmLevelReason[idx] || '세부 정보 없음'
+    showDetail.value = true
+  }
+}
+const closeDetail = () => {
+  showDetail.value = false
+  detailText.value = ''
+}
 
 onMounted(async () => {
   // 로컬 캐시 먼저 불러오기
@@ -67,10 +80,10 @@ onMounted(async () => {
 
     countryInfo.value = {
       country: safetyData.country || '국가명 없음',
-      level: safetyData.travel_alert || '정보 없음',
+      level: safetyData.alarmLevels || '정보 없음',
       incident: safetyData.event || '정보 없음',
       occurDate: safetyData.occurDate || '날짜 없음',
-      danger: '추가 예정',
+      alarmLevelReason: safetyData.alarmLevelReason || '정보 없음',
       summary: safetyData.summary || '요약 정보 없음',
       updated_at: new Date().toLocaleString(),
     }
@@ -165,10 +178,41 @@ const handleInstallClick = async () => {
     </div>
 
     <div class="bg-gray-100 dark:bg-gray-800 p-4 rounded-xl shadow mb-4">
-      <p class="text-lg"><strong>국가:</strong>{{ countryInfo?.country }}</p>
-      <p class="text-lg"><strong>여행경보:</strong>{{ countryInfo?.level }}</p>
-      <p class="text-lg"><strong>사건사고:</strong>{{ countryInfo?.occurDate }} {{ countryInfo?.incident }}</p>
-      <p class="text-lg"><strong>주의사항:</strong>{{ countryInfo?.danger }}</p>
+      <p class="text-lg"><strong>국가 : </strong>{{ countryInfo?.country }}</p>
+
+      <!-- 여행경보 출력 -->
+      <div v-if="Array.isArray(countryInfo.level)">
+        <p class="text-lg font-semibold">여행경보</p>
+        <ul class="list-disc list-inside text-base text-gray-700 dark:text-gray-200">
+          <li v-for="(lvl, idx) in countryInfo.level" :key="idx">
+            {{ lvl }}
+            <span
+              @click="openDetail(idx)"
+              class="text-sm text-blue-600 hover:underline ml-2 cursor-pointer"
+            >
+              (세부내용 클릭)
+            </span>
+          </li>
+        </ul>
+      </div>
+
+      <div v-if="showDetail" class="fixed inset-0 z-50 bg-black bg-opacity-50 flex items-center justify-center">
+        <div class="bg-white dark:bg-gray-800 p-6 rounded-lg shadow-lg w-11/12 max-w-md">
+          <h2 class="text-lg font-bold mb-4 text-gray-800 dark:text-gray-100">여행경보 세부내용</h2>
+          <p class="text-base text-gray-700 dark:text-gray-200 whitespace-pre-line">{{ detailText }}</p>
+          <div class="text-right mt-4">
+            <button @click="closeDetail" class="text-sm text-blue-600 hover:underline">닫기</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- 사건사고 출력 -->
+      <div class="mt-2">
+        <p class="text-lg font-semibold">사건사고</p>
+        <ul class="list-disc list-inside text-base text-gray-700 dark:text-gray-200">
+          <li>{{ countryInfo?.occurDate }} {{ countryInfo?.incident }}</li>
+        </ul>
+      </div>
     </div>
 
     <div class="bg-blue-50 dark:bg-blue-900 text-blue-800 dark:text-blue-100 p-4 rounded-lg mb-4">

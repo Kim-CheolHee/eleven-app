@@ -9,6 +9,7 @@ class TravelAlertService
     public static function get(string $countryCode): array
     {
         $key = config('services.safe_koica.key');
+
         $res = Http::get("http://apis.data.go.kr/1262000/TravelAlarmService0404/getTravelAlarm0404List", [
             'ServiceKey' => $key,
             'page' => 1,
@@ -18,21 +19,30 @@ class TravelAlertService
         ]);
 
         $items = $res->json()['response']['body']['items']['item'] ?? [];
-        $level = '정보 없음';
-        $danger = '정보 없음';
+
+        $levels = [];
+        $remarks = [];
+
+        $levelMap = [
+            1 => '1단계 여행유의',
+            2 => '2단계 여행자제',
+            3 => '3단계 출국권고',
+            4 => '4단계 여행금지',
+        ];
 
         foreach ($items as $item) {
-            if ($item['alarm_lvl'] == 4) {
-                $level = '4단계: 여행금지 (' . ($item['remark'] ?? '일부 지역') . ')';
-                $danger = $item['remark'] ?? '정보 없음';
-                break;
+            if (!empty($item['alarm_lvl']) && isset($levelMap[(int) $item['alarm_lvl']])) {
+                $levels[] = $levelMap[(int) $item['alarm_lvl']];
             }
-            if ($item['alarm_lvl'] == 1 && $level === '정보 없음') {
-                $level = '1단계: 여행유의 (' . ($item['remark'] ?? '전 지역') . ')';
-                $danger = $item['remark'] ?? '정보 없음';
+
+            if (!empty($item['remark'])) {
+                $remarks[] = trim($item['remark']);
             }
         }
 
-        return compact('level', 'danger');
+        return [
+            'levels' => array_unique($levels),
+            'remarks' => array_unique($remarks),
+        ];
     }
 }

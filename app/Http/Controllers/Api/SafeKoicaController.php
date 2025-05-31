@@ -33,8 +33,8 @@ class SafeKoicaController extends Controller
 
             // 외교부_국가·지역별 여행경보 목록 조회(0404 대륙정보) API
             $travelAlertData = TravelAlertService::get($countryCode);
-            $alarmLevel = $travelAlertData['level'] ?? '정보 없음';
-            $dangerZone = $travelAlertData['danger'] ?? '정보 없음';
+            $alarmLevels = $travelAlertData['levels'] ?? [];
+            $alarmLevelReason = $travelAlertData['remarks'] ?? [];
 
             // 외교부_국가∙지역별 특별여행주의보 API
             $specialWarning = SpecialWarningService::get($countryCode);
@@ -45,13 +45,13 @@ class SafeKoicaController extends Controller
             // ai 요약 호출 캐시 처리 (10분)
             $cacheKey = 'summary_' . $countryCode;
             // api 테스트 할 때는 ttl 값을 0으로. 배포시엔 600
-            $summary = Cache::remember($cacheKey, 600, function () use ($countryName, $event, $occurDate, $alarmLevel, $dangerZone, $travelAdjustment) {
+            $summary = Cache::remember($cacheKey, 600, function () use ($countryName, $event, $occurDate, $alarmLevels, $alarmLevelReason, $travelAdjustment) {
                 return SafeKoicaAIService::summarize([
                     'country' => $countryName,
                     'event' => $event,
                     'occurDate' => $occurDate,
-                    'alert' => $alarmLevel,
-                    'danger' => $dangerZone ?? '정보 없음',
+                    'alarmLevels' => $alarmLevels,
+                    'alarmLevelReason' => $alarmLevelReason ?? '정보 없음',
                     'special' => $specialWarning ?? '없음',
                     'travel_adjustment' => $travelAdjustment ?? '없음',
                 ]);
@@ -62,8 +62,8 @@ class SafeKoicaController extends Controller
                 'country' => $countryName,
                 'event' => $event,
                 'occurDate' => $occurDate,
-                'travel_alert' => $alarmLevel,
-                'danger' => $dangerZone ?? '정보 없음',
+                'alarmLevels' => $alarmLevels,
+                'alarmLevelReason' => $alarmLevelReason ?? '정보 없음',
                 'special_warning' => $specialWarning ?? '없음',
                 'travel_adjustment' => $travelAdjustment ?? '없음',
                 'summary' => $summary,
