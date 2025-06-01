@@ -14,6 +14,7 @@ use App\Services\RiskCalendarService; // 한국국제협력단_파견국 안전�
 use App\Services\TravelAlertService; //  외교부_국가·지역별 여행경보 목록 조회(0404 대륙정보) API
 use App\Services\SpecialWarningService;// 외교부_국가∙지역별 특별여행주의보 API
 use App\Services\TravelAlertAdjustmentService; // 외교부_국가∙지역별 여행경보 조정 API
+use Illuminate\Support\Facades\Config;
 
 class SafeKoicaController extends Controller
 {
@@ -120,6 +121,21 @@ class SafeKoicaController extends Controller
                 'message' => '요청 처리 중 오류가 발생했습니다. 잠시 후 다시 시도해주세요.',
             ], 500);
         }
+    }
+
+    public function getCountryList()
+    {
+        $countries = Config::get('countries');
+
+        // 'code'와 'korean'만 추출하여 배열로 재구성
+        $countryList = collect($countries)->map(function ($item, $code) {
+            return [
+                'code' => $code,
+                'name' => $item['korean'],
+            ];
+        })->values(); // 인덱스 재정렬
+
+        return response()->json($countryList);
     }
 
 }

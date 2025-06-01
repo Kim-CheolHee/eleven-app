@@ -6,8 +6,10 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
 Route::prefix('safe-koica')->group(function () {
+    Route::get('/countries', [SafeKoicaController::class, 'getCountryList']);
     Route::get('{iso}', [SafeKoicaController::class, 'getCountrySafety'])
         ->middleware('throttle:5,1'); // 1분에 5회로 요약 호출 제한
+
 
     Route::post('install-log', function (Request $request) {
         Log::info('📲 SafeKoica 설치 기록', [

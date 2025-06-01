@@ -11,6 +11,8 @@ const countryInfo = ref({
     updated_at: '-',
 })
 const countryCode = ref(null)
+const countries = ref([]) // select 용 변수
+const selectedCode = ref(null) // select 용 변수
 
 // 대화 관련 상태
 const userInput = ref('')
@@ -59,6 +61,11 @@ onMounted(async () => {
         showInstallButton.value = true
     })
 
+    // 국가 목록 불러오기
+    const res = await fetch('/api/safe-koica/countries')
+    const data = await res.json()
+    countries.value = data.filter(c => c && c.code && c.name)
+
     // IP 기반 국가 코드 조회
     try {
         const res = await fetch('https://ipapi.co/json/')
@@ -70,29 +77,11 @@ onMounted(async () => {
         countryCode.value = 'LA'
     }
 
-    // 실시간 안전 정보 요청 및 캐시 업데이트
-    try {
-        const safetyRes = await fetch(`/api/safe-koica/${countryCode.value}`)
-        if (!safetyRes.ok) throw new Error(`API 응답 오류: ${safetyRes.status}`)
-        const safetyData = await safetyRes.json()
+    // select 기본 선택값 지정
+    selectedCode.value = countryCode.value
 
-        countryInfo.value = {
-            country: safetyData.country || '국가명 없음',
-            level: safetyData.alarmLevels || '정보 없음',
-            incident: safetyData.event || '정보 없음',
-            occurDate: safetyData.occurDate || '날짜 없음',
-            alarmLevelReason: safetyData.alarmLevelReason || '정보 없음',
-            specialLevel: safetyData.specialLevel || '없음',
-            specialReason: safetyData.specialReason || '세부 내용 없음',
-            summary: safetyData.summary || '요약 정보 없음',
-            updated_at: new Date().toLocaleString(),
-        }
-
-        // 최신 정보 캐시 저장
-        localStorage.setItem('safeKoicaCountryInfo', JSON.stringify(countryInfo.value))
-    } catch (err) {
-        console.error('안전정보 API 호출 실패:', err)
-    }
+    // 해당 국가 정보 불러오기
+    await fetchCountryInfoByCode(countryCode.value)
 })
 
 // GPT 질문 함수
@@ -161,6 +150,39 @@ const handleInstallClick = async () => {
         }
     }
 }
+
+// 국가명 select 핸들러
+const handleSelect = async () => {
+    if (!selectedCode.value) return
+    countryCode.value = selectedCode.value
+    await fetchCountryInfoByCode(selectedCode.value)
+}
+
+// 실시간 안전 정보 요청 및 캐시 업데이트
+const fetchCountryInfoByCode = async (code) => {
+    try {
+        const safetyRes = await fetch(`/api/safe-koica/${code}`)
+        if (!safetyRes.ok) throw new Error(`API 응답 오류: ${safetyRes.status}`)
+        const safetyData = await safetyRes.json()
+
+        countryInfo.value = {
+            country: safetyData.country || '국가명 없음',
+            level: safetyData.alarmLevels || '정보 없음',
+            incident: safetyData.event || '정보 없음',
+            occurDate: safetyData.occurDate || '날짜 없음',
+            alarmLevelReason: safetyData.alarmLevelReason || '정보 없음',
+            specialLevel: safetyData.specialLevel || '없음',
+            specialReason: safetyData.specialReason || '세부 내용 없음',
+            summary: safetyData.summary || '요약 정보 없음',
+            updated_at: new Date().toLocaleString(),
+        }
+
+        // 최신 정보 캐시 저장
+        localStorage.setItem('safeKoicaCountryInfo', JSON.stringify(countryInfo.value))
+    } catch (err) {
+        console.error('안전정보 API 호출 실패:', err)
+    }
+}
 </script>
 
 <template>
@@ -172,47 +194,59 @@ const handleInstallClick = async () => {
     </Head>
 
     <div class="min-h-screen bg-white dark:bg-gray-900 p-6">
-        <h1 class="text-3xl font-bold mb-4 text-center text-blue-700">🛡️ Safe KOICA</h1>
+        <h1 class="text-3xl font-bold mb-2 text-center text-blue-700">🛡️ Safe KOICA</h1>
 
-        <div class="text-gray-500 text-xs text-center mt-2">
-            마지막 업데이트: {{ countryInfo?.updated_at }}
+        <div class="flex items-center justify-end">
+            <select
+                id="countrySelect"
+                v-model="selectedCode"
+                @change="handleSelect"
+                class="text-sm p-1 border border-gray-300 rounded-md shadow-sm bg-white dark:bg-gray-700 dark:text-white max-h-48 overflow-y-auto"
+            >
+                <option value="" disabled>국가 선택</option>
+                <option v-for="c in countries" :key="c.code" :value="c.code">
+                    {{ c.name }}
+                </option>
+            </select>
         </div>
 
         <div class="bg-gray-100 dark:bg-gray-800 p-4 rounded-xl shadow mb-4">
-            <p class="text-lg"><strong>국가 : </strong>{{ countryInfo?.country }}</p>
+            <p class="text-lg">
+                <strong>국가 : </strong>{{ countryInfo?.country }}
+            </p>
 
-        <!-- 여행경보 + 특별여행주의보 통합 출력 -->
-        <div v-if="Array.isArray(countryInfo.level) || countryInfo.specialLevel !== '없음'">
-            <p class="text-lg font-semibold">여행경보</p>
-            <ul class="list-disc list-inside text-base text-gray-700 dark:text-gray-200">
-                <!-- 일반 여행경보 출력 -->
-                <li
-                    v-for="(lvl, idx) in countryInfo.level"
-                    :key="idx"
-                    :class="lvl.includes('4단계') ? 'text-red-600 font-bold dark:text-red-400 dark:font-bold' : ''"
-                >
-                    {{ lvl }}
-                    <span @click="showDetailText(countryInfo.alarmLevelReason[idx])"
-                        class="text-sm text-blue-600 hover:underline ml-2 cursor-pointer">
-                        (세부내용 클릭)
-                    </span>
-                </li>
-
-                <!-- 특별여행주의보 출력 -->
-                <li
-                    v-if="countryInfo.specialLevel !== '없음'"
-                    class="text-purple-600 dark:text-purple-400"
-                >
-                    {{ countryInfo.specialLevel }}
-                    <span
-                        @click="showDetailText(countryInfo.specialReason)"
-                        class="text-sm text-blue-600 hover:underline ml-2 cursor-pointer"
+            <!-- 여행경보 + 특별여행주의보 통합 출력 -->
+            <div v-if="Array.isArray(countryInfo.level) || countryInfo.specialLevel !== '없음'">
+                <p class="text-lg font-semibold">여행경보</p>
+                <ul class="list-disc list-inside text-base text-gray-700 dark:text-gray-200">
+                    <!-- 일반 여행경보 출력 -->
+                    <li
+                        v-for="(lvl, idx) in countryInfo.level"
+                        :key="idx"
+                        :class="lvl.includes('4단계') ? 'text-red-600 font-bold dark:text-red-400 dark:font-bold' : ''"
                     >
-                        (세부내용 클릭)
-                    </span>
-                </li>
-            </ul>
-        </div>
+                        {{ lvl }}
+                        <span @click="showDetailText(countryInfo.alarmLevelReason[idx])"
+                            class="text-sm text-blue-600 hover:underline ml-2 cursor-pointer">
+                            (세부내용 클릭)
+                        </span>
+                    </li>
+
+                    <!-- 특별여행주의보 출력 -->
+                    <li
+                        v-if="countryInfo.specialLevel !== '없음'"
+                        class="text-purple-600 dark:text-purple-400"
+                    >
+                        {{ countryInfo.specialLevel }}
+                        <span
+                            @click="showDetailText(countryInfo.specialReason)"
+                            class="text-sm text-blue-600 hover:underline ml-2 cursor-pointer"
+                        >
+                            (세부내용 클릭)
+                        </span>
+                    </li>
+                </ul>
+            </div>
 
             <div v-if="showDetail" class="fixed inset-0 z-50 bg-black bg-opacity-50 flex items-center justify-center">
                 <div class="bg-white dark:bg-gray-800 p-6 rounded-lg shadow-lg w-11/12 max-w-md">
@@ -257,7 +291,11 @@ const handleInstallClick = async () => {
         </div>
 
         <div class="text-gray-600 text-sm text-center">
-            ※ 정보는 실시간 공공데이터를 기반으로 요약 제공됩니다.
+            ※ 위 정보는 공공데이터를 기반으로 제공됩니다.
+        </div>
+
+        <div class="text-gray-500 text-xs text-center mt-1">
+            마지막 업데이트: {{ countryInfo?.updated_at }}
         </div>
 
         <div v-if="showInstallButton" class="text-center mt-6">
