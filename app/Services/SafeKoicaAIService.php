@@ -25,7 +25,8 @@ class SafeKoicaAIService
                 특별여행주의보 발령 일자 및 지역: {$info['specialReason']},
                 여행경보 조정 내용: {$travelAdjustment},
 
-                위 정보를 3~4줄 정도로 요약해서 안내 카드 문장을 생성해줘. 문장은 친절하고 간결하게 작성해.";
+                위 정보를 3~4줄 정도로 요약해서 안내 카드 문장을 생성해줘. 문장은 친절하고 간결하게 작성해줘.
+                그리고 여행 경보 지도 관련 내용은 넣지 않아도 돼. 이건 텍스트로 정보를 전달하는 용도야.";
 
             $response = $client->chat()->create([
                 'model' => 'gpt-4o',

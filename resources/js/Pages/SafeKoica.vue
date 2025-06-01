@@ -69,10 +69,6 @@ onMounted(async () => {
         console.error('국가 코드 조회 실패:', err)
         countryCode.value = 'LA'
     }
-    // 테스트용 국가 강제 지정
-    if (import.meta.env.DEV) {
-        // countryCode.value = 'RU'
-    }
 
     // 실시간 안전 정보 요청 및 캐시 업데이트
     try {
