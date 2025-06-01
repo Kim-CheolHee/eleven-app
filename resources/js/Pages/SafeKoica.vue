@@ -21,14 +21,12 @@ const chatResponse = ref('')
 const showInstallButton = ref(false)
 let deferredPrompt = null
 
-// 여행경보 단계 모달
+// 여행경보 또는 특별여행주의보 세부내용 열기
 const showDetail = ref(false)
 const detailText = ref('')
-const openDetail = (idx) => {
-    if (Array.isArray(countryInfo.value.alarmLevelReason)) {
-        detailText.value = countryInfo.value.alarmLevelReason[idx] || '세부 정보 없음'
-        showDetail.value = true
-    }
+const showDetailText = (text) => {
+    detailText.value = text || '세부 정보 없음'
+    showDetail.value = true
 }
 const closeDetail = () => {
     showDetail.value = false
@@ -71,6 +69,10 @@ onMounted(async () => {
         console.error('국가 코드 조회 실패:', err)
         countryCode.value = 'LA'
     }
+    // 테스트용 국가 강제 지정
+    if (import.meta.env.DEV) {
+        // countryCode.value = 'RU'
+    }
 
     // 실시간 안전 정보 요청 및 캐시 업데이트
     try {
@@ -84,6 +86,8 @@ onMounted(async () => {
             incident: safetyData.event || '정보 없음',
             occurDate: safetyData.occurDate || '날짜 없음',
             alarmLevelReason: safetyData.alarmLevelReason || '정보 없음',
+            specialLevel: safetyData.specialLevel || '없음',
+            specialReason: safetyData.specialReason || '세부 내용 없음',
             summary: safetyData.summary || '요약 정보 없음',
             updated_at: new Date().toLocaleString(),
         }
@@ -181,19 +185,38 @@ const handleInstallClick = async () => {
         <div class="bg-gray-100 dark:bg-gray-800 p-4 rounded-xl shadow mb-4">
             <p class="text-lg"><strong>국가 : </strong>{{ countryInfo?.country }}</p>
 
-            <!-- 여행경보 출력 -->
-            <div v-if="Array.isArray(countryInfo.level)">
-                <p class="text-lg font-semibold">여행경보</p>
-                <ul class="list-disc list-inside text-base text-gray-700 dark:text-gray-200">
-                    <li v-for="(lvl, idx) in countryInfo.level" :key="idx">
-                        {{ lvl }}
-                        <span @click="openDetail(idx)"
-                            class="text-sm text-blue-600 hover:underline ml-2 cursor-pointer">
-                            (세부내용 클릭)
-                        </span>
-                    </li>
-                </ul>
-            </div>
+        <!-- 여행경보 + 특별여행주의보 통합 출력 -->
+        <div v-if="Array.isArray(countryInfo.level) || countryInfo.specialLevel !== '없음'">
+            <p class="text-lg font-semibold">여행경보</p>
+            <ul class="list-disc list-inside text-base text-gray-700 dark:text-gray-200">
+                <!-- 일반 여행경보 출력 -->
+                <li
+                    v-for="(lvl, idx) in countryInfo.level"
+                    :key="idx"
+                    :class="lvl.includes('4단계') ? 'text-red-600 font-bold dark:text-red-400 dark:font-bold' : ''"
+                >
+                    {{ lvl }}
+                    <span @click="showDetailText(countryInfo.alarmLevelReason[idx])"
+                        class="text-sm text-blue-600 hover:underline ml-2 cursor-pointer">
+                        (세부내용 클릭)
+                    </span>
+                </li>
+
+                <!-- 특별여행주의보 출력 -->
+                <li
+                    v-if="countryInfo.specialLevel !== '없음'"
+                    class="text-purple-600 dark:text-purple-400"
+                >
+                    {{ countryInfo.specialLevel }}
+                    <span
+                        @click="showDetailText(countryInfo.specialReason)"
+                        class="text-sm text-blue-600 hover:underline ml-2 cursor-pointer"
+                    >
+                        (세부내용 클릭)
+                    </span>
+                </li>
+            </ul>
+        </div>
 
             <div v-if="showDetail" class="fixed inset-0 z-50 bg-black bg-opacity-50 flex items-center justify-center">
                 <div class="bg-white dark:bg-gray-800 p-6 rounded-lg shadow-lg w-11/12 max-w-md">
@@ -207,7 +230,7 @@ const handleInstallClick = async () => {
 
             <!-- 사건사고 출력 -->
             <div class="mt-2">
-                <p class="text-lg font-semibold">사건사고</p>
+                <p class="text-lg font-semibold">사건·사고·행사</p>
                 <ul class="list-disc list-inside text-base text-gray-700 dark:text-gray-200">
                     <li>{{ countryInfo?.occurDate }} {{ countryInfo?.incident }}</li>
                 </ul>

@@ -38,6 +38,8 @@ class SafeKoicaController extends Controller
 
             // 외교부_국가∙지역별 특별여행주의보 API
             $specialWarning = SpecialWarningService::get($countryCode);
+            $specialLevel = $specialWarning['status'];
+            $specialReason = $specialWarning['remark'];
 
             // 외교부_국가∙지역별 여행경보 조정 API
             $travelAdjustment = TravelAlertAdjustmentService::get($countryCode);
@@ -45,14 +47,16 @@ class SafeKoicaController extends Controller
             // ai 요약 호출 캐시 처리 (10분)
             $cacheKey = 'summary_' . $countryCode;
             // api 테스트 할 때는 ttl 값을 0으로. 배포시엔 600
-            $summary = Cache::remember($cacheKey, 600, function () use ($countryName, $event, $occurDate, $alarmLevels, $alarmLevelReason, $travelAdjustment) {
+            $summary = Cache::remember($cacheKey, 600, function () use (
+                $countryName, $event, $occurDate, $alarmLevels, $alarmLevelReason, $specialLevel, $specialReason, $travelAdjustment) {
                 return SafeKoicaAIService::summarize([
                     'country' => $countryName,
                     'event' => $event,
                     'occurDate' => $occurDate,
                     'alarmLevels' => $alarmLevels,
                     'alarmLevelReason' => $alarmLevelReason ?? '정보 없음',
-                    'special' => $specialWarning ?? '없음',
+                    'specialLevel' => $specialLevel ?? '없음',
+                    'specialReason' => $specialReason ?? '없음',
                     'travel_adjustment' => $travelAdjustment ?? '없음',
                 ]);
             });
@@ -64,7 +68,8 @@ class SafeKoicaController extends Controller
                 'occurDate' => $occurDate,
                 'alarmLevels' => $alarmLevels,
                 'alarmLevelReason' => $alarmLevelReason ?? '정보 없음',
-                'special_warning' => $specialWarning ?? '없음',
+                'specialLevel' => $specialLevel ?? '없음',
+                'specialReason' => $specialReason ?? '없음',
                 'travel_adjustment' => $travelAdjustment ?? '없음',
                 'summary' => $summary,
             ]);

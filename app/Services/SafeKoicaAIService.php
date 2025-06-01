@@ -21,10 +21,11 @@ class SafeKoicaAIService
                 이벤트 날짜: {$info['occurDate']}
                 경보 단계: {$alarmLevels},
                 주의 지역: {$alarmLevelReason},
-                특별여행주의보: {$info['special']},
+                특별여행주의보 발령 여부: {$info['specialLevel']},
+                특별여행주의보 발령 일자 및 지역: {$info['specialReason']},
                 여행경보 조정 내용: {$travelAdjustment},
 
-                위 정보를 2~3줄 정도로 요약해서 안내 카드 문장을 생성해줘. 문장은 친절하고 간결하게 작성해.";
+                위 정보를 3~4줄 정도로 요약해서 안내 카드 문장을 생성해줘. 문장은 친절하고 간결하게 작성해.";
 
             $response = $client->chat()->create([
                 'model' => 'gpt-4o',

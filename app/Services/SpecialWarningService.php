@@ -6,7 +6,7 @@ use Illuminate\Support\Facades\Http;
 
 class SpecialWarningService
 {
-    public static function get(string $countryCode): ?string
+    public static function get(string $countryCode): array
     {
         $key = config('services.safe_koica.key');
         $res = Http::get("http://apis.data.go.kr/1262000/SptravelWarningServiceV2/getSptravelWarningListV2", [
@@ -19,10 +19,16 @@ class SpecialWarningService
 
         $item = $res->json()['response']['body']['items']['item'][0] ?? null;
 
-        if ($item && !empty($item['written_dt'])) {
-            return "특별여행주의보 발령됨 ({$item['written_dt']})";
+        if (!$item || empty($item['evacuate_rcmnd_remark'])) {
+            return [
+                'status' => '없음',
+                'remark' => null,
+            ];
         }
 
-        return $item ? "특별여행주의보 발령됨" : '없음';
+        return [
+            'status' => '특별여행주의보 발령',
+            'remark' => "({$item['written_dt']}) {$item['evacuate_rcmnd_remark']}",
+        ];
     }
 }
