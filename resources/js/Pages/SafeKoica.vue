@@ -4,8 +4,7 @@ import { Head } from '@inertiajs/vue3'
 
 const countryInfo = ref({
     country: '로딩 중...',
-    level: '조회 중...',
-    occurDate: '조회 중...',
+    occurDateEvent: '조회 중...',
     incident: '조회 중...',
     summary: '초기 정보를 불러오는 중입니다...',
     updated_at: '-',
@@ -168,8 +167,7 @@ const fetchCountryInfoByCode = async (code) => {
         countryInfo.value = {
             country: safetyData.country || '국가명 없음',
             level: safetyData.alarmLevels || '정보 없음',
-            incident: safetyData.event || '정보 없음',
-            occurDate: safetyData.occurDate || '날짜 없음',
+            occurDateEvent: safetyData.occurDateEvent || null,
             alarmLevelReason: safetyData.alarmLevelReason || '정보 없음',
             specialLevel: safetyData.specialLevel || '없음',
             specialReason: safetyData.specialReason || '세부 내용 없음',
@@ -259,10 +257,10 @@ const fetchCountryInfoByCode = async (code) => {
             </div>
 
             <!-- 사건사고 출력 -->
-            <div class="mt-2">
+            <div v-if="countryInfo?.occurDateEvent" class="mt-2">
                 <p class="text-lg font-semibold">사건·사고·행사</p>
                 <ul class="list-disc list-inside text-base text-gray-700 dark:text-gray-200">
-                    <li>{{ countryInfo?.occurDate }} {{ countryInfo?.incident }}</li>
+                    <li>{{ countryInfo?.occurDateEvent }}</li>
                 </ul>
             </div>
         </div>

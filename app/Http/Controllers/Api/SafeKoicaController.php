@@ -32,6 +32,10 @@ class SafeKoicaController extends Controller
             $calendar = RiskCalendarService::get($countryCode);
             $event = $calendar['event'] ?? '정보 없음';
             $occurDate = $calendar['occur_date'] ?? '알 수 없음';
+            $occurDateEvent = null;
+            if ($event !== '정보 없음') {
+                $occurDateEvent = trim(($occurDate ?? '') . ' ' . $event);
+            }
 
             // 외교부_국가·지역별 여행경보 목록 조회(0404 대륙정보) API
             $travelAlertData = TravelAlertService::get($countryCode);
@@ -66,8 +70,7 @@ class SafeKoicaController extends Controller
 
             return response()->json([
                 'country' => $countryName,
-                'event' => $event,
-                'occurDate' => $occurDate,
+                'occurDateEvent' => $occurDateEvent,
                 'alarmLevels' => $alarmLevels,
                 'alarmLevelReason' => $alarmLevelReason ?? '정보 없음',
                 'specialLevel' => $specialLevel ?? '없음',
