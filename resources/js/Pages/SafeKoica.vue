@@ -12,6 +12,7 @@ const countryInfo = ref({
 const countryCode = ref(null)
 const countries = ref([]) // select 용 변수
 const selectedCode = ref(null) // select 용 변수
+const isCountryLoading = ref(false) // select 시 딜레이 표시 용 변수
 
 // 대화 관련 상태
 const userInput = ref('')
@@ -160,6 +161,8 @@ const handleSelect = async () => {
 // 실시간 안전 정보 요청 및 캐시 업데이트
 const fetchCountryInfoByCode = async (code) => {
     try {
+        isCountryLoading.value = true
+
         const safetyRes = await fetch(`/api/safe-koica/${code}`)
         if (!safetyRes.ok) throw new Error(`API 응답 오류: ${safetyRes.status}`)
         const safetyData = await safetyRes.json()
@@ -179,6 +182,8 @@ const fetchCountryInfoByCode = async (code) => {
         localStorage.setItem('safeKoicaCountryInfo', JSON.stringify(countryInfo.value))
     } catch (err) {
         console.error('안전정보 API 호출 실패:', err)
+    } finally {
+        isCountryLoading.value = false
     }
 }
 </script>
@@ -195,6 +200,9 @@ const fetchCountryInfoByCode = async (code) => {
         <h1 class="text-3xl font-bold mb-2 text-center text-blue-700">🛡️ Safe KOICA</h1>
 
         <div class="flex items-center justify-end">
+            <span v-if="isCountryLoading" class="text-sm text-gray-500 animate-pulse">
+                불러오는 중...
+            </span>
             <select
                 id="countrySelect"
                 v-model="selectedCode"
@@ -206,6 +214,7 @@ const fetchCountryInfoByCode = async (code) => {
                     {{ c.name }}
                 </option>
             </select>
+
         </div>
 
         <div class="bg-gray-100 dark:bg-gray-800 p-4 rounded-xl shadow mb-4">
