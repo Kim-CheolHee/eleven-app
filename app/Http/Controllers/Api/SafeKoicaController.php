@@ -26,7 +26,7 @@ class SafeKoicaController extends Controller
             $countryCode = strtoupper($iso);
             $countryName = config("countries.{$countryCode}.korean");
             Log::info('접속국가:', ['code' => $countryCode]);
-            Log::info('국기명:', ['code' => $countryName]);
+            Log::info('국가명:', ['code' => $countryName]);
 
             // 한국국제협력단_파견국 안전이슈 월력표 API
             $calendar = RiskCalendarService::get($countryCode);
